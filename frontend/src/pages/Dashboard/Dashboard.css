@@ -1,0 +1,45 @@
+.dashboard{
+
+display:flex;
+
+flex-direction:column;
+
+gap:30px;
+
+}
+
+.welcome{
+
+background:white;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 3px 10px rgba(0,0,0,.05);
+
+}
+
+.welcome h1{
+
+font-size:34px;
+
+margin-bottom:8px;
+
+}
+
+.welcome p{
+
+color:#64748b;
+
+}
+
+.dashboard-grid{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:20px;
+
+}

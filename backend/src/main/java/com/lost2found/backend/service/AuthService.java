@@ -49,21 +49,32 @@ public class AuthService {
     User user = userRepository.findByEmail(request.getEmail());
 
     // Check if user exists
-    if (user == null) {
-        return new LoginResponse(null, "Invalid Email or Password");
-    }
+   if (user == null) {
+    return new LoginResponse(
+            null,
+            null,
+            null,
+            "Invalid Email or Password"
+    );
+}
 
     // Check password
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        return new LoginResponse(null, "Invalid Email or Password");
-    }
-
+    return new LoginResponse(
+            null,
+            null,
+            null,
+            "Invalid Email or Password"
+    );
+}
     // JWT will come here in next step
    String token = jwtService.generateToken(user.getEmail());
 
     return new LoginResponse(
-        token,
-        "Login Successful"
-    );
+    token,
+    user.getName(),
+    user.getEmail(),
+    "Login Successful"
+);
 }
 }

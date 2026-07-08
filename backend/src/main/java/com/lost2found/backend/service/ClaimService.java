@@ -9,6 +9,8 @@ import com.lost2found.backend.repository.LostItemRepository;
 import com.lost2found.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
+
 
 @Service
 public class ClaimService {
@@ -74,24 +76,25 @@ public class ClaimService {
     return claimRepository.findByLostItem(lostItem);
     }
 
-    public String approveClaim(Integer claimId, String email) {
+   public String approveClaim(Integer claimId, String email) {
 
     Claim claim = claimRepository.findById(claimId)
             .orElseThrow(() -> new RuntimeException("Claim Not Found"));
 
     // Only owner can approve
     if (!claim.getLostItem().getUser().getEmail().equals(email)) {
-        return "Only the item owner can approve claims";
+        throw new RuntimeException("Only the item owner can approve claims");
     }
 
+    // Claim moves to verification stage
     claim.setStatus("APPROVED");
 
-    // Update lost item status
-    claim.getLostItem().setStatus("CLAIMED");
+    // Item is waiting for physical verification
+    claim.getLostItem().setStatus("UNDER_VERIFICATION");
 
     claimRepository.save(claim);
 
-    return "Claim Approved Successfully";
+    return "Claim Approved. Meet the claimant and verify the item.";
     }
 
     public String rejectClaim(Integer claimId, String email) {
@@ -109,5 +112,58 @@ public class ClaimService {
     claimRepository.save(claim);
 
     return "Claim Rejected Successfully";
+    }
+
+public String confirmClaim(Integer claimId, String email) {
+
+    System.out.println("===== CONFIRM CLAIM =====");
+    System.out.println("Claim ID : " + claimId);
+    System.out.println("Logged User : " + email);
+
+    Claim claim = claimRepository.findById(claimId)
+            .orElseThrow(() -> new RuntimeException("Claim Not Found"));
+
+    System.out.println("Owner : " + claim.getLostItem().getUser().getEmail());
+    System.out.println("Claim Status : " + claim.getStatus());
+
+    // Only owner can confirm
+    if (!claim.getLostItem().getUser().getEmail().equals(email)) {
+        throw new RuntimeException("Only the item owner can confirm");
+    }
+
+    // Claim must already be approved
+    if (!claim.getStatus().equals("APPROVED")) {
+        throw new RuntimeException("Claim is not under verification");
+    }
+
+    claim.setStatus("COMPLETED");
+    claim.getLostItem().setStatus("CLAIMED");
+
+    List<Claim> pendingClaims =
+            claimRepository.findByLostItemAndStatus(
+                    claim.getLostItem(),
+                    "PENDING"
+            );
+
+    for (Claim otherClaim : pendingClaims) {
+        otherClaim.setStatus("REJECTED");
+    }
+
+    claimRepository.save(claim);
+    claimRepository.saveAll(pendingClaims);
+
+    return "Item returned successfully. Claim completed.";
+}
+    
+    public List<Claim> getMyClaims(String email) {
+
+    User user = userRepository.findByEmail(email);
+
+    if (user == null) {
+        throw new RuntimeException("User Not Found");
+    }
+
+    return claimRepository.findByClaimant(user);
+
     }
 }

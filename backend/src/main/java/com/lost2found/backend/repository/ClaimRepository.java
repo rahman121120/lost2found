@@ -12,7 +12,9 @@ public interface ClaimRepository extends JpaRepository<Claim, Integer> {
     List<Claim> findByClaimant(User claimant);
 
     List<Claim> findByLostItem(LostItem lostItem);
-    
+
+    List<Claim> findByLostItemAndStatus(LostItem lostItem, String status);
+
     long countByClaimant(User claimant);
 
     long countByClaimantAndStatus(User claimant, String status);

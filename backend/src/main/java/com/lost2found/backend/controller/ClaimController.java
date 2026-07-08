@@ -59,4 +59,27 @@ public class ClaimController {
 
     return claimService.rejectClaim(claimId, email);
     }
+    
+    @PutMapping("/{claimId}/confirm")
+    public String confirmClaim(
+        @PathVariable Integer claimId,
+        @RequestHeader("Authorization") String authHeader) {
+
+    String token = authHeader.substring(7);
+    String email = jwtService.extractEmail(token);
+
+    return claimService.confirmClaim(claimId, email);
+    }
+
+    @GetMapping
+    public java.util.List<com.lost2found.backend.entity.Claim> getMyClaims(
+        @RequestHeader("Authorization") String authHeader) {
+
+    String token = authHeader.substring(7);
+
+    String email = jwtService.extractEmail(token);
+
+    return claimService.getMyClaims(email);
+
+    }
 }

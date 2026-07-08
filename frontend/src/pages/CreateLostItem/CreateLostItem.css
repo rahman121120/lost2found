@@ -1,0 +1,56 @@
+.create-item{
+
+background:white;
+
+padding:40px;
+
+border-radius:15px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+}
+
+.create-item input,
+.create-item textarea{
+
+padding:15px;
+
+font-size:16px;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+}
+
+.create-item textarea{
+
+height:140px;
+
+resize:none;
+
+}
+
+.create-item button{
+
+padding:15px;
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
