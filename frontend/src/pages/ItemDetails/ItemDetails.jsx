@@ -1,24 +1,37 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import "./ItemDetails.css";
 
 function ItemDetails() {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [item, setItem] = useState(null);
-
-    const [message, setMessage] = useState("");
-
-    const [claims, setClaims] = useState([]);
+    const [matches, setMatches] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
-        loadItem();
-        loadClaims();
+        loadData();
 
     }, []);
+
+    async function loadData() {
+
+        setLoading(true);
+
+        await Promise.all([
+            loadItem(),
+            loadMatches()
+        ]);
+
+        setLoading(false);
+
+    }
 
     async function loadItem() {
 
@@ -26,215 +39,75 @@ function ItemDetails() {
 
             const token = localStorage.getItem("token");
 
-            const response = await api.get(`/items/${id}`, {
+            const response = await api.get(
 
-                headers: {
-                    Authorization: `Bearer ${token}`
+                `/items/${id}`,
+
+                {
+
+                    headers: {
+
+                        Authorization: `Bearer ${token}`
+
+                    }
+
                 }
 
-            });
+            );
 
             setItem(response.data);
 
         } catch (error) {
 
-            console.log(error);
+            console.error(error);
+
+            toast.error("Unable to load lost item");
 
         }
 
     }
 
-    async function loadClaims() {
+    async function loadMatches() {
 
-    try {
+        try {
 
-        const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token");
 
-        const response = await api.get(
+            const response = await api.get(
 
-            `/claims/item/${id}`,
+                `/found-items/matches/${id}`,
 
-            {
+                {
 
-                headers: {
+                    headers: {
 
-                    Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token}`
+
+                    }
 
                 }
 
-            }
+            );
 
-        );
+            setMatches(response.data);
 
-        setClaims(response.data);
+        } catch (error) {
 
-    } catch (error) {
+            console.error(error);
 
-        console.log(error);
+        }
 
     }
 
-}
+    if (loading) {
 
-async function approveClaim(id){
-
-try{
-
-const token=localStorage.getItem("token");
-
-await api.put(
-
-`/claims/${id}/approve`,
-
-{},
-
-{
-
-headers:{
-
-Authorization:`Bearer ${token}`
-
-}
-
-}
-
-);
-
-alert("Claim Approved");
-
-loadClaims();
-
-loadItem();
-
-}catch(err){
-
-console.log(err);
-
-}
-
-}
-
-async function rejectClaim(id){
-
-try{
-
-const token=localStorage.getItem("token");
-
-await api.put(
-
-`/claims/${id}/reject`,
-
-{},
-
-{
-
-headers:{
-
-Authorization:`Bearer ${token}`
-
-}
-
-}
-
-);
-
-alert("Claim Rejected");
-
-loadClaims();
-
-}catch(err){
-
-console.log(err);
-
-}
-
-}
-
-async function confirmClaim(id){
-
-try{
-
-const token=localStorage.getItem("token");
-
-await api.put(
-
-`/claims/${id}/confirm`,
-
-{},
-
-{
-
-headers:{
-
-Authorization:`Bearer ${token}`
-
-}
-
-}
-
-);
-
-alert("Item Returned Successfully");
-
-loadClaims();
-
-loadItem();
-
-}catch(err){
-
-console.log(err);
-
-alert("Failed");
-
-}
-
-}
-    
-    async function claimItem() {
-
-    try {
-
-        const token = localStorage.getItem("token");
-
-        const response = await api.post(
-
-            "/claims",
-
-            {
-
-                lostItemId: item.id,
-
-                message: message
-
-            },
-
-            {
-
-                headers: {
-
-                    Authorization: `Bearer ${token}`
-
-                }
-
-            }
-
-        );
-
-        alert(response.data);
-
-    } catch (error) {
-
-        console.log(error);
-
-        alert("Unable to submit claim");
+        return <LoadingSpinner />;
 
     }
-
-}
 
     if (!item) {
 
-        return <h2>Loading...</h2>;
+        return <h2>Lost Item Not Found</h2>;
 
     }
 
@@ -242,180 +115,238 @@ alert("Failed");
 
         <div className="details-container">
 
-           <img
-    src={
-        item.image
-            ? `http://localhost:8080/uploads/${item.image}`
-            : "https://placehold.co/600x400?text=No+Image"
-    }
-    alt={item.title}
-/>
+            <div className="details-image">
+
+                <img
+                    src={
+                        item.image
+                            ? `http://localhost:8080/uploads/${item.image}`
+                            : "https://placehold.co/700x500?text=No+Image"
+                    }
+                    alt={item.title}
+                />
+
+            </div>
 
             <div className="details-content">
 
                 <h1>{item.title}</h1>
 
-                <p><b>Category:</b> {item.category}</p>
+                <span className={`status-badge ${item.status.toLowerCase()}`}>
+                    {item.status}
+                </span>
 
-                <p><b>Location:</b> {item.location}</p>
+                <hr />
 
-                <p><b>Description:</b> {item.description}</p>
+                <p>
 
-                <p><b>Reward:</b> ₹{item.reward}</p>
+                    <strong>Category :</strong> {item.category}
 
-                <p><b>Status:</b> {item.status}</p>
+                </p>
 
-                <textarea
+                <p>
 
-placeholder="Why does this item belong to you?"
+                    <strong>Lost Location :</strong> {item.location}
 
-value={message}
+                </p>
 
-onChange={(e)=>setMessage(e.target.value)}
+                <p>
 
-style={{
+                    <strong>Description :</strong>
 
-width:"100%",
+                </p>
 
-height:"120px",
+                <p>
 
-marginTop:"25px",
+                    {item.description}
 
-padding:"15px",
+                </p>
 
-borderRadius:"10px"
+                {
 
-}}
+                    item.reward && Number(item.reward) > 0 && (
 
-/>
+                        <p>
 
-<button
+                            <strong>Reward :</strong> ₹ {item.reward}
 
-style={{marginTop:"20px"}}
+                        </p>
 
-onClick={claimItem}
+                    )
 
->
+                }
 
-Submit Claim
+                <hr />
 
-</button>
+                <h3>
 
-<hr style={{margin:"40px 0"}} />
+                    Reported By
 
-<h2>
+                </h3>
 
-Claims
+                <p>
 
-</h2>
+                    <strong>Name :</strong> {item.user?.name}
 
-{
+                </p>
 
-claims.map(claim=>(
+                <p>
 
-<div
+                    <strong>Department :</strong> {item.user?.department}
 
-key={claim.id}
+                </p>
 
-style={{
+                <p>
 
-background:"#fff",
+                    <strong>Year :</strong> {item.user?.year}
 
-padding:"20px",
+                </p>
 
-marginTop:"15px",
+                <p>
 
-borderRadius:"10px",
+                    <strong>Status :</strong> {item.status}
 
-boxShadow:"0 3px 10px rgba(0,0,0,.08)"
+                </p>
 
-}}
+                <div
+                    style={{
+                        marginTop: "30px",
+                        padding: "18px",
+                        background: "#EEF6FF",
+                        borderRadius: "12px",
+                        borderLeft: "5px solid #2563EB"
+                    }}
+                >
 
->
+                    <strong>Notice</strong>
 
-<h3>{claim.claimant.name}</h3>
+                    <p style={{ marginTop: "10px" }}>
 
-<p>{claim.message}</p>
+                        If you have found this item or have any information about it,
+                        please contact the owner directly or create a Found Item post
+                        so the owner can identify and claim it.
 
-<p>
+                    </p>
 
-Status :
+                </div>
 
-<b>{claim.status}</b>
+                <hr style={{ margin: "40px 0" }} />
 
-</p>
+                <h2>
 
-{
-claim.status === "PENDING" && (
+                    🔍 Possible Matching Found Items
 
-<div
-style={{
-display:"flex",
-gap:"12px",
-marginTop:"15px"
-}}
->
+                </h2>
 
-<button
-onClick={() => approveClaim(claim.id)}
-style={{
-background:"#16a34a",
-color:"white",
-border:"none",
-padding:"10px 18px",
-borderRadius:"8px",
-cursor:"pointer"
-}}
->
-Approve
-</button>
+                {
 
-<button
-onClick={() => rejectClaim(claim.id)}
-style={{
-background:"#dc2626",
-color:"white",
-border:"none",
-padding:"10px 18px",
-borderRadius:"8px",
-cursor:"pointer"
-}}
->
-Reject
-</button>
+                    matches.length === 0 ? (
 
-</div>
+                        <div
+                            style={{
+                                marginTop: "20px",
+                                padding: "20px",
+                                background: "#F9FAFB",
+                                borderRadius: "12px"
+                            }}
+                        >
 
-)
-}
-{
-claim.status === "APPROVED" &&(
+                            <p>
 
-<button
-onClick={() => confirmClaim(claim.id)}
-style={{
-marginTop:"15px",
-background:"#2563eb",
-color:"white",
-border:"none",
-padding:"10px 20px",
-borderRadius:"8px",
-cursor:"pointer"
-}}
->
+                                No matching found items yet.
 
-Confirm Return
+                            </p>
 
-</button>
+                        </div>
 
-)
-}
+                    ) : (
 
-</div>
+                        matches.map(match => (
 
-))
+                            <div
+                                key={match.id}
+                                style={{
+                                    display: "flex",
+                                    gap: "20px",
+                                    alignItems: "center",
+                                    marginTop: "20px",
+                                    padding: "18px",
+                                    borderRadius: "12px",
+                                    background: "#fff",
+                                    boxShadow: "0 4px 15px rgba(0,0,0,.08)"
+                                }}
+                            >
 
-}
+                                <img
+                                    src={
+                                        match.image
+                                            ? `http://localhost:8080/uploads/${match.image}`
+                                            : "https://placehold.co/150x120?text=No+Image"
+                                    }
+                                    alt={match.title}
+                                    style={{
+                                        width: "150px",
+                                        height: "120px",
+                                        objectFit: "cover",
+                                        borderRadius: "10px"
+                                    }}
+                                />
+
+                                <div style={{ flex: 1 }}>
+
+                                    <h3>
+
+                                        {match.title}
+
+                                    </h3>
+
+                                    <p>
+
+                                        <strong>Category :</strong> {match.category}
+
+                                    </p>
+
+                                    <p>
+
+                                        <strong>Location :</strong> {match.location}
+
+                                    </p>
+
+                                    <p>
+
+                                        <strong>Status :</strong> {match.status}
+
+                                    </p>
+
+                                    <button
+
+                                        style={{
+                                            marginTop: "12px",
+                                            background: "#2563EB",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "10px 18px",
+                                            borderRadius: "8px",
+                                            cursor: "pointer"
+                                        }}
+
+                                        onClick={() => navigate(`/found-items/${match.id}`)}
+
+                                    >
+
+                                        View Found Item
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        ))
+
+                    )
+
+                }
 
             </div>
 

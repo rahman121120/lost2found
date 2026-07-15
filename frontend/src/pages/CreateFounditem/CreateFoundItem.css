@@ -1,22 +1,18 @@
 .create-item{
 
-    max-width:800px;
-
-    margin:0 auto;
-
     background:white;
 
     padding:40px;
 
-    border-radius:18px;
+    border-radius:15px;
 
     display:flex;
 
     flex-direction:column;
 
-    gap:20px;
+    gap:18px;
 
-    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
 
 }
 
@@ -26,7 +22,7 @@
 
     color:#1f2937;
 
-    font-size:32px;
+    font-size:30px;
 
     font-weight:700;
 
@@ -35,21 +31,17 @@
 .create-item input,
 .create-item textarea{
 
-    width:100%;
-
     padding:15px;
 
     font-size:16px;
 
-    border:1px solid #d1d5db;
+    border:1px solid #ddd;
 
-    border-radius:12px;
+    border-radius:10px;
 
     outline:none;
 
     transition:.25s;
-
-    font-family:inherit;
 
 }
 
@@ -58,31 +50,19 @@
 
     border-color:#2563eb;
 
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
 
 }
 
 .create-item textarea{
 
-    height:150px;
+    height:140px;
 
     resize:none;
 
 }
 
-.create-item input[type="file"]{
-
-    padding:12px;
-
-    background:#f8fafc;
-
-    cursor:pointer;
-
-}
-
 .create-item button{
-
-    margin-top:10px;
 
     padding:15px;
 
@@ -92,7 +72,7 @@
 
     border:none;
 
-    border-radius:12px;
+    border-radius:10px;
 
     font-size:16px;
 
@@ -110,7 +90,7 @@
 
     transform:translateY(-2px);
 
-    box-shadow:0 12px 25px rgba(37,99,235,.25);
+    box-shadow:0 10px 20px rgba(37,99,235,.25);
 
 }
 
@@ -126,20 +106,23 @@
 
     .create-item{
 
-        padding:25px;
-
-        margin:15px;
+        padding:20px;
 
     }
 
     .create-item h1{
 
-        font-size:26px;
+        font-size:24px;
 
     }
 
     .create-item input,
-    .create-item textarea,
+    .create-item textarea{
+
+        font-size:15px;
+
+    }
+
     .create-item button{
 
         font-size:15px;

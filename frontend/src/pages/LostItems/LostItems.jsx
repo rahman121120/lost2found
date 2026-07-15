@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../../services/api";
 import ItemCard from "../../components/cards/ItemCard";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import "../../styles/EmptyState.css";
+import "./LostItems.css";
 
 function LostItems() {
 
@@ -9,6 +13,7 @@ function LostItems() {
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
@@ -22,7 +27,7 @@ function LostItems() {
 
             const token = localStorage.getItem("token");
 
-            const res = await api.get("/items", {
+            const response = await api.get("/items", {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -30,89 +35,113 @@ function LostItems() {
 
             });
 
-            setItems(res.data);
+            setItems(response.data);
 
         } catch (error) {
 
-            console.log(error);
+            console.error(error);
+
+            toast.error("Unable to load lost items.");
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     }
 
+    const filteredItems = items.filter(item => {
+
+        return (
+
+            item.title &&
+            item.title.toLowerCase().includes(search.toLowerCase())
+
+        );
+
+    });
+
+    if (loading) {
+
+        return <LoadingSpinner />;
+
+    }
+
     return (
 
-        <>
+        <div className="page-container">
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "25px"
-                }}
-            >
+            <div className="page-header">
 
-                <h1>Lost Items</h1>
+                <h1 className="page-title">
+
+                    Lost Items
+
+                </h1>
 
                 <button
+                    className="report-btn"
                     onClick={() => navigate("/create-lost-item")}
-                    style={{
-                        background: "#2563EB",
-                        color: "white",
-                        border: "none",
-                        padding: "12px 20px",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        fontWeight: "bold"
-                    }}
                 >
+
                     + Report Lost Item
+
                 </button>
 
             </div>
 
             <input
+                className="search-box"
                 type="text"
                 placeholder="🔍 Search lost items..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{
-                    width: "100%",
-                    padding: "14px",
-                    borderRadius: "10px",
-                    border: "1px solid #ddd",
-                    marginBottom: "25px",
-                    fontSize: "16px"
-                }}
             />
 
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))",
-                    gap: "25px"
-                }}
-            >
+            {
 
-                {
-                    items
-                        .filter(item =>
-                            item.title.toLowerCase().includes(search.toLowerCase())
-                        )
-                        .map(item => (
+                filteredItems.length === 0 ? (
 
-                            <ItemCard
-                                key={item.id}
-                                item={item}
-                            />
+                    <div className="empty-state">
 
-                        ))
-                }
+                        <h2>📦</h2>
 
-            </div>
+                        <h3>No Lost Items Found</h3>
 
-        </>
+                        <p>
+
+                            Try another search or report a lost item.
+
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="item-grid">
+
+                        {
+
+                            filteredItems.map(item => (
+
+                                <ItemCard
+                                    key={item.id}
+                                    item={item}
+                                    type="lost"
+                                />
+
+                            ))
+
+                        }
+
+                    </div>
+
+                )
+
+            }
+
+        </div>
 
     );
 

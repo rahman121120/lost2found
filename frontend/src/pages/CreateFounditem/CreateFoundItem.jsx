@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import "./CreateLostItem.css";
+import "./CreateFoundItem.css";
 import toast from "react-hot-toast";
 
-function CreateLostItem() {
+function CreateFoundItem() {
 
     const navigate = useNavigate();
 
@@ -29,6 +29,7 @@ function CreateLostItem() {
             if (selectedFile) {
 
                 const formData = new FormData();
+
                 formData.append("file", selectedFile);
 
                 const uploadResponse = await api.post(
@@ -45,16 +46,17 @@ function CreateLostItem() {
                 uploadedImage = uploadResponse.data.fileName;
             }
 
-            // Create Lost Item
+            // Create Found Item
             await api.post(
-                "/items",
+                "/found-items",
                 {
                     title,
                     description,
                     category,
                     location,
                     reward,
-                    image: uploadedImage
+                    image: uploadedImage,
+                    status: "FOUND"     
                 },
                 {
                     headers: {
@@ -63,15 +65,15 @@ function CreateLostItem() {
                 }
             );
 
-            toast.success("Lost Item Posted Successfully");
+            toast.success("Found Item Posted Successfully");
 
-            navigate("/lost-items");
+            navigate("/found-items");
 
         } catch (err) {
 
             console.error(err);
 
-            toast.error("Unable to post lost item");
+            toast.error("Unable to post found item");
 
         }
 
@@ -82,11 +84,10 @@ function CreateLostItem() {
         <div className="create-item">
 
             <h1 className="page-title">
-                Report Lost Item
+                Report Found Item
             </h1>
 
             <input
-                type="text"
                 placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -99,21 +100,18 @@ function CreateLostItem() {
             />
 
             <input
-                type="text"
                 placeholder="Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
             />
 
             <input
-                type="text"
                 placeholder="Location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
             />
 
             <input
-                type="number"
                 placeholder="Reward"
                 value={reward}
                 onChange={(e) => setReward(e.target.value)}
@@ -166,4 +164,4 @@ function CreateLostItem() {
 
 }
 
-export default CreateLostItem;
+export default CreateFoundItem;

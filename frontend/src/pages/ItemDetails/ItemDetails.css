@@ -1,67 +1,316 @@
-.details-container{
+.details-container {
 
-display:flex;
-
-gap:40px;
-
-background:white;
-
-padding:30px;
-
-border-radius:18px;
-
-box-shadow:0 4px 15px rgba(0,0,0,.08);
+    display: flex;
+    gap: 40px;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    align-items: flex-start;
 
 }
 
-.details-container img{
+/* ==========================
+   Image
+========================== */
 
-width:420px;
+.details-image {
 
-height:320px;
-
-object-fit:cover;
-
-border-radius:15px;
+    flex-shrink: 0;
 
 }
 
-.details-content{
+.details-image img {
 
-flex:1;
-
-}
-
-.details-content h1{
-
-margin-bottom:20px;
-
-}
-
-.details-content p{
-
-margin-bottom:15px;
-
-font-size:17px;
+    width: 500px;
+    height: 420px;
+    object-fit: contain;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
 
 }
 
-.details-content button{
+/* ==========================
+   Content
+========================== */
 
-margin-top:20px;
+.details-content {
 
-padding:14px 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 
-background:#2563EB;
+}
 
-border:none;
+.details-content h1 {
 
-color:white;
+    font-size: 34px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 15px;
 
-border-radius:10px;
+}
 
-cursor:pointer;
+.details-content h2 {
 
-font-weight:bold;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #111827;
+
+}
+
+.details-content hr {
+
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+
+}
+
+.details-content p {
+
+    margin-bottom: 14px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4b5563;
+
+}
+
+.details-content strong {
+
+    color: #111827;
+
+}
+
+/* ==========================
+   Status
+========================== */
+
+.status-badge {
+
+    display: inline-block;
+    width: fit-content;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+
+}
+
+.status-badge.lost {
+
+    background: #FEE2E2;
+    color: #B91C1C;
+
+}
+
+.status-badge.pending {
+
+    background: #FEF3C7;
+    color: #92400E;
+
+}
+
+.status-badge.found {
+
+    background: #DBEAFE;
+    color: #1D4ED8;
+
+}
+
+.status-badge.claimed {
+
+    background: #DCFCE7;
+    color: #166534;
+
+}
+
+.status-badge.returned {
+
+    background: #DCFCE7;
+    color: #166534;
+
+}
+
+/* ==========================
+   Notice Box
+========================== */
+
+.notice-box {
+
+    margin-top: 30px;
+    padding: 18px;
+    background: #EEF6FF;
+    border-left: 5px solid #2563EB;
+    border-radius: 12px;
+
+}
+
+.notice-box h3 {
+
+    margin-bottom: 10px;
+    color: #1E3A8A;
+
+}
+
+.notice-box p {
+
+    margin: 0;
+    color: #374151;
+    line-height: 1.6;
+
+}
+
+/* ==========================
+   Possible Match Cards
+========================== */
+
+.match-card {
+
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 14px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+
+}
+
+.match-card img {
+
+    width: 170px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+
+}
+
+.match-info {
+
+    flex: 1;
+
+}
+
+.match-info h3 {
+
+    margin-bottom: 10px;
+    color: #111827;
+
+}
+
+.match-info p {
+
+    margin-bottom: 8px;
+
+}
+
+.match-button {
+
+    margin-top: 15px;
+    background: #2563EB;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .25s;
+
+}
+
+.match-button:hover {
+
+    background: #1D4ED8;
+
+}
+
+/* ==========================
+   Empty Match Box
+========================== */
+
+.no-match {
+
+    margin-top: 20px;
+    padding: 22px;
+    text-align: center;
+    background: #F9FAFB;
+    border: 2px dashed #d1d5db;
+    border-radius: 14px;
+    color: #6b7280;
+
+}
+
+/* ==========================
+   Responsive
+========================== */
+
+@media (max-width:900px){
+
+    .details-container{
+
+        flex-direction:column;
+
+        padding:25px;
+
+    }
+
+    .details-image img{
+
+        width:100%;
+
+        height:320px;
+
+    }
+
+    .match-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .match-card img{
+
+        width:100%;
+
+        height:220px;
+
+    }
+
+}
+
+@media (max-width:600px){
+
+    .details-container{
+
+        padding:18px;
+
+    }
+
+    .details-content h1{
+
+        font-size:28px;
+
+    }
+
+    .details-content p{
+
+        font-size:15px;
+
+    }
+
+    .details-image img{
+
+        height:240px;
+
+    }
 
 }

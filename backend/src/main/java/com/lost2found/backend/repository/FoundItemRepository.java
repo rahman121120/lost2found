@@ -18,10 +18,13 @@ public interface FoundItemRepository extends JpaRepository<FoundItem, Integer> {
 
     List<FoundItem> findByCategoryIgnoreCase(String category);
 
+    // NEW
+    List<FoundItem> findByCategoryIgnoreCaseAndExpiredFalse(String category);
+
     List<FoundItem> findByStatusIgnoreCase(String status);
 
     List<FoundItem> findByLocationContainingIgnoreCase(String location);
 
-   List<FoundItem> findByExpiredFalse();
+    List<FoundItem> findByExpiredFalse();
 
 }

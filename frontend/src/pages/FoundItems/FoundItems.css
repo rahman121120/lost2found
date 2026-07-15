@@ -1,9 +1,144 @@
+/* ===========================
+   Found Items Page
+=========================== */
+
+.page-container{
+    width:100%;
+}
+
+/* ===========================
+   Header
+=========================== */
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    gap:20px;
+}
+
+.page-title{
+    font-size:34px;
+    font-weight:700;
+    color:#1f2937;
+}
+
+.page-header p{
+    color:#6b7280;
+    font-size:15px;
+    margin-top:6px;
+}
+
+/* ===========================
+   Report Button
+=========================== */
+
+.report-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.report-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(37,99,235,.25);
+}
+
+/* ===========================
+   Search
+=========================== */
+
+.search-box{
+    width:100%;
+    padding:14px 18px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:16px;
+    background:white;
+    margin-bottom:30px;
+    transition:.25s;
+}
+
+.search-box:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+
+/* ===========================
+   Grid
+=========================== */
+
 .item-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:25px;
+}
 
-display:grid;
+/* ===========================
+   Empty State
+=========================== */
 
-grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+.empty-state{
+    background:white;
+    padding:80px 30px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 
-gap:25px;
+.empty-state h2{
+    font-size:64px;
+    margin-bottom:15px;
+}
+
+.empty-state h3{
+    font-size:28px;
+    color:#1f2937;
+    margin-bottom:12px;
+}
+
+.empty-state p{
+    color:#6b7280;
+    font-size:16px;
+    line-height:1.7;
+    max-width:500px;
+    margin:auto;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:768px){
+
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .report-btn{
+        width:100%;
+    }
+
+    .item-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-title{
+        font-size:28px;
+    }
+
+    .search-box{
+        font-size:15px;
+    }
 
 }

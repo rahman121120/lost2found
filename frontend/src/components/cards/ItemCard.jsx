@@ -1,43 +1,91 @@
 import "./ItemCard.css";
 import { useNavigate } from "react-router-dom";
 
-function ItemCard({ item }) {
+function ItemCard({ item, type = "lost" }) {
+
     const navigate = useNavigate();
+
+    function openDetails() {
+
+        if (type === "found") {
+            navigate(`/found-items/${item.id}`);
+        } else {
+            navigate(`/items/${item.id}`);
+        }
+
+    }
+
+    const status = item.status || "UNKNOWN";
+
+    const imageUrl = item.image
+        ? `http://localhost:8080/uploads/${item.image}`
+        : "https://placehold.co/600x400?text=No+Image";
+
+    const postedDate = item.createdAt
+        ? new Date(item.createdAt).toLocaleDateString()
+        : "Recently";
 
     return (
 
         <div className="item-card">
 
-           <img
-    src={
-        item.image
-            ? `http://localhost:8080/uploads/${item.image}`
-            : "https://placehold.co/600x400?text=No+Image"
-    }
-    alt={item.title}
-/>
+            <div className="image-container">
+
+                <img
+                    src={imageUrl}
+                    alt={item.title}
+                    onError={(e) => {
+                        e.target.src = "https://placehold.co/600x400?text=No+Image";
+                    }}
+                />
+
+                <span
+                    className={`status ${status.toLowerCase().replace(/\s+/g, "_")}`}
+                >
+                    {status}
+                </span>
+
+            </div>
 
             <div className="item-body">
 
-                <div className="item-header">
+                <h2>{item.title}</h2>
 
-                    <h3>{item.title}</h3>
+                <p>📍 {item.location || "Unknown Location"}</p>
 
-                    <span className={item.status.toLowerCase()}>
-                        {item.status}
-                    </span>
+                <p>🎒 {item.category || "Unknown Category"}</p>
 
-                </div>
+                {
+                    item.reward ? (
 
-                <p><b>📍</b> {item.location}</p>
+                        <p className="reward">
 
-                <p><b>🎒</b> {item.category}</p>
+                            🎁 Reward: ₹{item.reward}
 
-                <p><b>💰</b> ₹ {item.reward}</p>
+                        </p>
 
-                <button onClick={() => navigate(`/items/${item.id}`)}>
-    View Details
-</button>
+                    ) : (
+
+                        <p className="reward">
+
+                            🎁 No Reward
+
+                        </p>
+
+                    )
+                }
+
+                <p className="date">
+
+                    🕒 Posted: {postedDate}
+
+                </p>
+
+                <button onClick={openDetails}>
+
+                    View Details →
+
+                </button>
 
             </div>
 

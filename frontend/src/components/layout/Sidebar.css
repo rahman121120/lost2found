@@ -10,33 +10,62 @@
     position: fixed;
     left: 0;
     top: 0;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.logo {
+    margin-bottom: 30px;
 }
 
 .logo h2 {
     color: #2563eb;
     text-align: center;
-    margin-bottom: 40px;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex: 1;
 }
 
 .menu a {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 14px;
+    padding: 14px 16px;
     border-radius: 10px;
     color: #334155;
-    transition: .25s;
+    text-decoration: none;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.menu a svg {
+    font-size: 20px;
+    min-width: 20px;
 }
 
 .menu a:hover {
     background: #2563eb;
+    color: white;
+    transform: translateX(4px);
+}
+
+/* React Router Active Link */
+.menu a.active,
+.menu a.active-link {
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+}
+
+.menu a.active svg,
+.menu a.active-link svg {
     color: white;
 }
 
@@ -48,26 +77,95 @@
     border-radius: 10px;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 10px;
     font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
 }
 
 .logout-btn:hover {
     background: #dc2626;
+    transform: translateY(-2px);
 }
 
-.menu a.active{
-
-background:#2563EB;
-
-color:white;
-
-border-radius:10px;
-
+.logout-btn svg {
+    font-size: 18px;
 }
 
-.menu a{
+/* ===========================
+   Tablet
+=========================== */
 
-transition:.3s;
+@media (max-width: 900px) {
 
+    .sidebar {
+        width: 80px;
+        padding: 15px 10px;
+    }
+
+    .logo h2 {
+        display: none;
+    }
+
+    .menu a {
+        justify-content: center;
+        padding: 16px;
+        gap: 0;
+    }
+
+    .menu a span {
+        display: none;
+    }
+
+    .menu a svg {
+        font-size: 22px;
+    }
+
+    .menu a:hover {
+        transform: none;
+    }
+
+    .logout-btn {
+        font-size: 0;
+        padding: 14px;
+        gap: 0;
+    }
+
+    .logout-btn span {
+        display: none;
+    }
+
+    .logout-btn svg {
+        font-size: 22px;
+    }
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        width: 70px;
+        padding: 12px 8px;
+    }
+
+    .menu a {
+        padding: 14px;
+    }
+
+    .menu a svg {
+        font-size: 20px;
+    }
+
+    .logout-btn {
+        padding: 12px;
+    }
+
+    .logout-btn svg {
+        font-size: 20px;
+    }
 }

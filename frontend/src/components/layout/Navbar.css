@@ -1,0 +1,327 @@
+/* ===========================
+   Navbar
+=========================== */
+
+.navbar{
+
+    position:sticky;
+    top:0;
+    z-index:999;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 35px;
+
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(15px);
+
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+
+}
+
+/* ===========================
+   Logo
+=========================== */
+
+.navbar-logo h2{
+
+    color:#2563eb;
+    font-weight:700;
+    letter-spacing:.5px;
+
+}
+
+/* ===========================
+   Search
+=========================== */
+
+.navbar-search{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    background:#f5f6fa;
+
+    padding:12px 18px;
+
+    border-radius:30px;
+
+    width:420px;
+
+    transition:.25s;
+
+}
+
+.navbar-search:focus-within{
+
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+
+}
+
+.navbar-search svg{
+
+    color:#6b7280;
+
+}
+
+.navbar-search input{
+
+    width:100%;
+
+    border:none;
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+}
+
+/* ===========================
+   Right Section
+=========================== */
+
+.navbar-right{
+
+    display:flex;
+    align-items:center;
+    gap:25px;
+
+}
+
+/* ===========================
+   Notification Bell
+=========================== */
+
+.notification{
+
+    position:relative;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    color:#374151;
+
+    transition:.25s;
+
+}
+
+.notification:hover{
+
+    color:#2563eb;
+    transform:scale(1.08);
+
+}
+
+/* Badge */
+
+.notification span{
+
+    position:absolute;
+
+    top:-8px;
+    right:-8px;
+
+    min-width:18px;
+    height:18px;
+
+    padding:0 5px;
+
+    background:#ef4444;
+
+    color:white;
+
+    border-radius:999px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:10px;
+    font-weight:bold;
+
+}
+
+/* ===========================
+   Notification Dropdown
+=========================== */
+
+.notification-dropdown{
+
+    position:absolute;
+
+    top:45px;
+    right:0;
+
+    width:340px;
+
+    max-height:420px;
+
+    overflow-y:auto;
+
+    background:white;
+
+    border-radius:16px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+
+    z-index:1000;
+
+    animation:fadeDown .25s ease;
+
+}
+
+/* Individual Notification */
+
+.notification-item{
+
+    padding:16px;
+
+    border-bottom:1px solid #eee;
+
+    transition:.2s;
+
+    cursor:pointer;
+
+}
+
+.notification-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.notification-item:hover{
+
+    background:#f5f7ff;
+
+}
+
+.notification-item strong{
+
+    color:#111827;
+    font-size:15px;
+
+}
+
+.notification-item b{
+
+    color:#2563eb;
+
+}
+
+/* Empty Notification */
+
+.notification-empty{
+
+    padding:30px;
+
+    text-align:center;
+
+    color:#777;
+
+}
+
+/* ===========================
+   Profile
+=========================== */
+
+.profile-mini{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-weight:600;
+
+}
+
+.profile-mini svg{
+
+    font-size:34px;
+
+    color:#2563eb;
+
+}
+
+.profile-mini p{
+
+    color:#374151;
+
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+.notification-dropdown::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+
+}
+
+/* ===========================
+   Animation
+=========================== */
+
+@keyframes fadeDown{
+
+    from{
+
+        opacity:0;
+        transform:translateY(-10px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:900px){
+
+    .navbar{
+
+        padding:15px 20px;
+
+    }
+
+    .navbar-search{
+
+        display:none;
+
+    }
+
+    .profile-mini p{
+
+        display:none;
+
+    }
+
+    .notification-dropdown{
+
+        width:290px;
+
+    }
+
+}

@@ -1,0 +1,261 @@
+.page-container{
+
+max-width:1100px;
+
+margin:auto;
+
+padding:20px;
+
+}
+
+.page-title{
+
+font-size:34px;
+
+font-weight:700;
+
+margin-bottom:30px;
+
+color:#1f2937;
+
+}
+
+/* ==========================
+   Claim Card
+========================== */
+
+.claim-card{
+
+background:white;
+
+padding:25px;
+
+border-radius:16px;
+
+margin-bottom:25px;
+
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+
+transition:all .25s ease;
+
+border-left:6px solid #2563eb;
+
+}
+
+.claim-card:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 16px 35px rgba(0,0,0,.12);
+
+}
+
+.claim-card h2{
+
+margin-bottom:18px;
+
+font-size:24px;
+
+color:#111827;
+
+}
+
+.claim-card p{
+
+margin:10px 0;
+
+font-size:16px;
+
+color:#4b5563;
+
+line-height:1.7;
+
+}
+
+.claim-card strong{
+
+color:#111827;
+
+}
+
+/* ==========================
+   Status Badge
+========================== */
+
+.claim-status{
+
+display:inline-block;
+
+margin-left:10px;
+
+padding:6px 14px;
+
+border-radius:20px;
+
+font-size:13px;
+
+font-weight:700;
+
+color:white;
+
+text-transform:uppercase;
+
+letter-spacing:.5px;
+
+}
+
+/* Waiting for finder review */
+
+.claim-status.pending{
+
+background:#f59e0b;
+
+}
+
+/* Finder verified the owner */
+
+.claim-status.verified{
+
+background:#2563eb;
+
+}
+
+/* Item successfully returned */
+
+.claim-status.returned{
+
+background:#16a34a;
+
+}
+
+/* Invalid ownership claim */
+
+.claim-status.rejected{
+
+background:#dc2626;
+
+}
+
+/* ==========================
+   View Item Button
+========================== */
+
+.claim-card button{
+
+margin-top:18px;
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:12px 20px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-size:15px;
+
+font-weight:600;
+
+transition:.2s;
+
+}
+
+.claim-card button:hover{
+
+background:#1d4ed8;
+
+}
+
+/* ==========================
+   Empty State
+========================== */
+
+.empty-state{
+
+background:white;
+
+padding:70px 30px;
+
+text-align:center;
+
+border-radius:18px;
+
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+
+}
+
+.empty-state h2{
+
+font-size:70px;
+
+margin-bottom:15px;
+
+}
+
+.empty-state h3{
+
+font-size:30px;
+
+margin-bottom:15px;
+
+color:#111827;
+
+}
+
+.empty-state p{
+
+font-size:17px;
+
+color:#6b7280;
+
+line-height:1.6;
+
+}
+
+/* ==========================
+   Responsive
+========================== */
+
+@media(max-width:768px){
+
+.page-title{
+
+font-size:28px;
+
+}
+
+.claim-card{
+
+padding:20px;
+
+}
+
+.claim-card h2{
+
+font-size:20px;
+
+}
+
+.claim-card p{
+
+font-size:15px;
+
+}
+
+.claim-card button{
+
+width:100%;
+
+}
+
+.empty-state{
+
+padding:50px 20px;
+
+}
+
+}

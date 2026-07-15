@@ -19,17 +19,20 @@ public class FoundItemService {
 
     @Autowired
     private LostItemRepository lostItemRepository;
-    
+
     @Autowired
     private FoundItemRepository foundItemRepository;
 
     @Autowired
     private UserRepository userRepository;
 
+    // =====================================================
     // Create Found Item
+    // =====================================================
     public String createFoundItem(FoundItemRequest request, String email) {
 
         User user = userRepository.findByEmail(email);
+
         if (user == null) {
             return "User Not Found";
         }
@@ -43,7 +46,13 @@ public class FoundItemService {
         item.setLatitude(request.getLatitude());
         item.setLongitude(request.getLongitude());
         item.setImage(request.getImage());
-        item.setStatus(request.getStatus());
+
+        // Default status if frontend doesn't send one
+        if (request.getStatus() == null || request.getStatus().isBlank()) {
+            item.setStatus("AVAILABLE");
+        } else {
+            item.setStatus(request.getStatus());
+        }
 
         item.setUser(user);
 
@@ -52,25 +61,31 @@ public class FoundItemService {
         return "Found Item Posted Successfully";
     }
 
-
+    // =====================================================
     // Get All Found Items
+    // =====================================================
     public List<FoundItem> getAllFoundItems() {
 
         return foundItemRepository.findAllByOrderByCreatedAtDesc();
 
     }
 
-    // Get One Found Item
+    // =====================================================
+    // Get Found Item By ID
+    // =====================================================
     public FoundItem getFoundItemById(Integer id) {
 
         return foundItemRepository.findById(id).orElse(null);
 
     }
 
+    // =====================================================
     // Update Found Item
-    public String updateFoundItem(Integer id,
-                                  UpdateFoundItemRequest request,
-                                  String email) {
+    // =====================================================
+    public String updateFoundItem(
+            Integer id,
+            UpdateFoundItemRequest request,
+            String email) {
 
         FoundItem item = foundItemRepository.findById(id).orElse(null);
 
@@ -96,7 +111,9 @@ public class FoundItemService {
         return "Found Item Updated Successfully";
     }
 
+    // =====================================================
     // Delete Found Item
+    // =====================================================
     public String deleteFoundItem(Integer id, String email) {
 
         FoundItem item = foundItemRepository.findById(id).orElse(null);
@@ -113,60 +130,106 @@ public class FoundItemService {
 
         return "Found Item Deleted Successfully";
     }
-    
-    public List<FoundItem> searchByTitle(String title){
-    return foundItemRepository.findByTitleContainingIgnoreCase(title);
+
+    // =====================================================
+    // Search
+    // =====================================================
+    public List<FoundItem> searchByTitle(String title) {
+
+        return foundItemRepository.findByTitleContainingIgnoreCase(title);
+
     }
 
-    public List<FoundItem> searchByCategory(String category){
-    return foundItemRepository.findByCategoryIgnoreCase(category);
+    public List<FoundItem> searchByCategory(String category) {
+
+        return foundItemRepository.findByCategoryIgnoreCase(category);
+
     }
 
-    public List<FoundItem> searchByStatus(String status){
-    return foundItemRepository.findByStatusIgnoreCase(status);
+    public List<FoundItem> searchByStatus(String status) {
+
+        return foundItemRepository.findByStatusIgnoreCase(status);
+
     }
 
-    public List<FoundItem> searchByLocation(String location){
-    return foundItemRepository.findByLocationContainingIgnoreCase(location);
+    public List<FoundItem> searchByLocation(String location) {
+
+        return foundItemRepository.findByLocationContainingIgnoreCase(location);
+
     }
 
-   public List<FoundItem> findPossibleMatches(Integer lostItemId) {
+    // =====================================================
+    // Smart Matching Engine
+    // =====================================================
+    public List<FoundItem> findPossibleMatches(Integer lostItemId) {
 
-    LostItem lostItem = lostItemRepository
-            .findById(lostItemId)
-            .orElse(null);
+        LostItem lostItem = lostItemRepository
+                .findById(lostItemId)
+                .orElse(null);
 
-    if (lostItem == null) {
-        return new ArrayList<>();
-    }
-
-    List<FoundItem> candidates =
-            foundItemRepository.findByCategoryIgnoreCase(
-                    lostItem.getCategory());
-
-    List<FoundItem> matches = new ArrayList<>();
-
-    for (FoundItem item : candidates) {
-
-        boolean titleMatch =
-                item.getTitle().toLowerCase()
-                        .contains(lostItem.getTitle().toLowerCase())
-                ||
-                lostItem.getTitle().toLowerCase()
-                        .contains(item.getTitle().toLowerCase());
-
-        boolean locationMatch =
-                item.getLocation().toLowerCase()
-                        .contains(lostItem.getLocation().toLowerCase())
-                ||
-                lostItem.getLocation().toLowerCase()
-                        .contains(item.getLocation().toLowerCase());
-
-        if (titleMatch || locationMatch) {
-            matches.add(item);
+        if (lostItem == null) {
+            return new ArrayList<>();
         }
+
+        List<FoundItem> candidates =
+                foundItemRepository.findByCategoryIgnoreCaseAndExpiredFalse(
+                        lostItem.getCategory());
+
+        List<FoundItem> matches = new ArrayList<>();
+
+        for (FoundItem item : candidates) {
+
+            // Ignore already returned items
+            if ("RETURNED".equalsIgnoreCase(item.getStatus())) {
+                continue;
+            }
+
+            int score = 0;
+
+            // Category match
+            score += 30;
+
+            // Title similarity
+            if (item.getTitle() != null && lostItem.getTitle() != null) {
+
+                String foundTitle = item.getTitle().toLowerCase();
+                String lostTitle = lostItem.getTitle().toLowerCase();
+
+                if (foundTitle.contains(lostTitle)
+                        || lostTitle.contains(foundTitle)) {
+
+                    score += 40;
+                }
+
+            }
+
+            // Location similarity
+            if (item.getLocation() != null && lostItem.getLocation() != null) {
+
+                String foundLocation = item.getLocation().toLowerCase();
+                String lostLocation = lostItem.getLocation().toLowerCase();
+
+                if (foundLocation.contains(lostLocation)
+                        || lostLocation.contains(foundLocation)) {
+
+                    score += 20;
+                }
+
+            }
+
+            // Image exists
+            if (item.getImage() != null && !item.getImage().isBlank()) {
+                score += 10;
+            }
+
+            // Minimum confidence
+            if (score >= 60) {
+                matches.add(item);
+            }
+
+        }
+
+        return matches;
     }
 
-    return matches;
-    }
 }

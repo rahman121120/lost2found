@@ -2,47 +2,47 @@ import { useState } from "react";
 import "./Login.css";
 import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
+
     const navigate = useNavigate();
 
     async function handleLogin() {
 
-    try {
+        try {
 
-        const response = await api.post("/auth/login", {
-            email,
-            password
-        });
+            const response = await api.post("/auth/login", {
+                email,
+                password
+            });
 
-        console.log(response.data);
+            if (!response.data.token) {
+                toast.error(response.data.message);
+                return;
+            }
 
-        console.log("TOKEN:", response.data.token);
+            // Save login information
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userName", response.data.name);
+            localStorage.setItem("userEmail", response.data.email);
 
-       if (!response.data.token) {
-    alert(response.data.message);
-    return;
-}
+            toast.success(response.data.message);
 
-localStorage.setItem("token", response.data.token);
+            navigate("/dashboard");
 
-if (response.data.name) {
-    localStorage.setItem("userName", response.data.name);
-}
+        } catch (error) {
 
-localStorage.setItem("userEmail", response.data.email);
+            console.error(error);
 
-navigate("/dashboard");
+            toast.error(
+                error.response?.data?.message || "Invalid Email or Password"
+            );
 
-    } catch (error) {
-
-        alert(error.response?.data?.message || "Invalid Email or Password");
-
-    }
+        }
 
     }
 
@@ -71,7 +71,9 @@ navigate("/dashboard");
                 />
 
                 <button onClick={handleLogin}>
+
                     Login
+
                 </button>
 
             </div>

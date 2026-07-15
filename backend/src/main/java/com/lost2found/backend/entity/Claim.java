@@ -19,17 +19,25 @@ public class Claim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // Person claiming ownership
     @ManyToOne
     @JoinColumn(name = "claimant_id")
     private User claimant;
 
+    // Found item being claimed
     @ManyToOne
-    @JoinColumn(name = "lost_item_id")
-    private LostItem lostItem;
+    @JoinColumn(name = "found_item_id")
+    private FoundItem foundItem;
 
     @Column(columnDefinition = "TEXT")
     private String message;
 
+    /*
+     * PENDING
+     * VERIFIED
+     * REJECTED
+     * RETURNED
+     */
     private String status;
 
     @CreationTimestamp

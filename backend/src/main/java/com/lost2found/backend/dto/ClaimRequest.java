@@ -2,18 +2,18 @@ package com.lost2found.backend.dto;
 
 public class ClaimRequest {
 
-    private Integer lostItemId;
+    private Integer foundItemId;
     private String message;
 
     public ClaimRequest() {
     }
 
-    public Integer getLostItemId() {
-        return lostItemId;
+    public Integer getFoundItemId() {
+        return foundItemId;
     }
 
-    public void setLostItemId(Integer lostItemId) {
-        this.lostItemId = lostItemId;
+    public void setFoundItemId(Integer foundItemId) {
+        this.foundItemId = foundItemId;
     }
 
     public String getMessage() {

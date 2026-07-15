@@ -1,0 +1,191 @@
+Current Lost2Found Status
+
+Project: Lost2Found – Campus Lost & Found Management System
+
+Goal
+
+Solve the problem of recovering lost belongings on campus.
+Replace scattered communication (WhatsApp groups, word of mouth, notice boards) with one centralized platform.
+Keep user contact details private until necessary.
+
+Tech Stack
+
+Frontend: React
+Backend: Java Spring Boot
+Database: MySQL
+Authentication: Spring Security + JWT + BCrypt
+ORM: JPA + Hibernate
+Modules Completed (Till Now)
+✅ User Registration
+✅ User Login
+✅ JWT Authentication
+✅ Dashboard
+✅ Lost Items Module
+✅ Found Items Module
+✅ Item Details Page
+✅ Claim Request System
+✅ My Claims API
+✅ Search Functionality
+✅ Database Design
+✅ Backend REST APIs
+🚧 Image Upload (Next)
+🚧 Notifications (Future Enhancement)
+PPT Structure (12 Slides)
+Slide 1 — Title
+Lost2Found
+Campus Lost & Found Management System
+
+Presented By
+Abdul Rahman A
+
+Department of Computer Science & Engineering
+
+Slide 2 — Problem Statement
+Problem
+
+Every year, students lose valuable belongings such as wallets, ID cards, mobile phones, calculators, and documents on campus.
+
+Current recovery methods rely on:
+
+WhatsApp groups
+Word of mouth
+Notice boards
+Manual reporting
+
+These methods are unorganized, slow, and often lead to unsuccessful recovery.
+
+Slide 3 — Proposed Solution
+Lost2Found
+
+Lost2Found provides a centralized platform where students and staff can:
+
+Report lost items
+Report found items
+Search existing reports
+Submit claim requests
+Recover belongings faster
+
+The system improves communication while protecting user privacy.
+
+Slide 4 — Objectives
+Objectives
+Simplify lost item reporting
+Increase recovery success
+Reduce search time
+Secure user information
+Create an organized campus-wide platform
+Slide 5 — System Architecture
+React Frontend
+
+↓
+
+Spring Boot REST API
+
+↓
+
+Spring Security + JWT
+
+↓
+
+JPA / Hibernate
+
+↓
+
+MySQL Database
+
+Simple architecture diagram.
+
+Slide 6 — Features
+Key Features
+
+✔ User Registration
+
+✔ Secure Login
+
+✔ Report Lost Items
+
+✔ Report Found Items
+
+✔ Search Items
+
+✔ View Item Details
+
+✔ Submit Claim Requests
+
+✔ Track Claim Status
+
+Slide 7 — Workflow
+User Login
+
+↓
+
+Report Lost Item
+
+↓
+
+Another User Reports Found Item
+
+↓
+
+Search & Match
+
+↓
+
+Submit Claim
+
+↓
+
+Verification
+
+↓
+
+Item Returned
+
+This slide will impress faculty because it clearly explains the process.
+
+Slide 8 — Database
+
+Main Tables
+
+Users
+Lost Items
+Found Items
+Claims
+
+Explain briefly:
+
+Users manage authentication.
+
+Items store lost/found reports.
+
+Claims connect users with recovered items.
+
+Slide 9 — Security
+Security Features
+JWT Authentication
+BCrypt Password Encryption
+Spring Security
+Protected APIs
+Privacy-first approach (contact details not publicly exposed)
+Slide 10 — Benefits
+Benefits
+Faster recovery of belongings
+Organized reporting system
+Reduced manual effort
+Improved campus communication
+Better user experience
+Secure management of information
+Slide 11 — Future Enhancements
+Real-time notifications
+AI image-based item matching
+QR Code integration
+Email notifications
+Admin analytics dashboard
+Mobile Application
+OCR for ID cards and documents
+Slide 12 — Conclusion
+Conclusion
+
+Lost2Found transforms the traditional lost-and-found process into a secure, organized, and efficient digital solution. By centralizing lost and found reports, it improves communication, increases recovery success, and creates a smarter campus environment.
+
+Thank You

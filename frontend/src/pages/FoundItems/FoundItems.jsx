@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import "./FoundItems.css";
 import ItemCard from "../../components/cards/ItemCard";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import toast from "react-hot-toast";
+import "./FoundItems.css";
+import "../../styles/EmptyState.css";
 
 function FoundItems() {
 
+    const navigate = useNavigate();
+
     const [items, setItems] = useState([]);
+    const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
@@ -27,42 +35,133 @@ function FoundItems() {
 
             });
 
-            setItems(response.data);
+            // Newest first
+            const sortedItems = [...response.data].sort(
+                (a, b) => b.id - a.id
+            );
+
+            setItems(sortedItems);
 
         } catch (error) {
 
-            console.log(error);
+            console.error(error);
+
+            toast.error("Unable to load found items");
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     }
 
+    const filteredItems = items.filter(item => {
+
+        const keyword = search.toLowerCase();
+
+        return (
+            item.title?.toLowerCase().includes(keyword) ||
+            item.category?.toLowerCase().includes(keyword) ||
+            item.location?.toLowerCase().includes(keyword)
+        );
+
+    });
+
+    if (loading) {
+
+        return <LoadingSpinner />;
+
+    }
+
     return (
 
-        <div>
+        <div className="page-container">
 
-            <h1 style={{ marginBottom: "30px" }}>
+            <div className="page-header">
 
-                Found Items
+                <div>
 
-            </h1>
+                    <h1 className="page-title">
 
-            <div className="item-grid">
+                        Found Items
 
-                {
+                    </h1>
 
-                    items.map(item => (
+                    <p
+                        style={{
+                            color: "#666",
+                            marginTop: "6px"
+                        }}
+                    >
 
-                        <ItemCard
-                            key={item.id}
-                            item={item}
-                        />
+                        {filteredItems.length} item(s) available
 
-                    ))
+                    </p>
 
-                }
+                </div>
+
+                <button
+                    className="report-btn"
+                    onClick={() => navigate("/create-found-item")}
+                >
+
+                    + Report Found Item
+
+                </button>
 
             </div>
+
+            <input
+                className="search-box"
+                type="text"
+                placeholder="🔍 Search by title, category or location..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+
+            {
+
+                filteredItems.length === 0 ? (
+
+                    <div className="empty-state">
+
+                        <h2>🎒</h2>
+
+                        <h3>No Found Items</h3>
+
+                        <p>
+
+                            No matching found items were found.
+                            Try another search or report a found item.
+
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="item-grid">
+
+                        {
+
+                            filteredItems.map(item => (
+
+                                <ItemCard
+                                    key={item.id}
+                                    item={item}
+                                    type="found"
+                                />
+
+                            ))
+
+                        }
+
+                    </div>
+
+                )
+
+            }
 
         </div>
 

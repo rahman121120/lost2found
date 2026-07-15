@@ -1,96 +1,182 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import "./Claims.css";
 
-function Claims(){
+function Claims() {
 
-const [claims,setClaims]=useState([]);
+    const navigate = useNavigate();
 
-useEffect(()=>{
+    const [claims, setClaims] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-loadClaims();
+    useEffect(() => {
 
-},[]);
+        loadClaims();
 
-async function loadClaims(){
+    }, []);
 
-try{
+    async function loadClaims() {
 
-const token=localStorage.getItem("token");
+        try {
 
-const res=await api.get("/claims",{
+            const token = localStorage.getItem("token");
 
-headers:{
-Authorization:`Bearer ${token}`
-}
+            const res = await api.get("/claims", {
 
-});
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
 
-setClaims(res.data);
+            });
 
-}catch(err){
+            setClaims(res.data);
 
-console.log(err);
+        } catch (err) {
 
-}
+            console.error(err);
 
-}
+            toast.error("Unable to load claims");
 
-return(
+        } finally {
 
-<div>
+            setLoading(false);
 
-<h1 style={{marginBottom:"25px"}}>
+        }
 
-My Claims
+    }
 
-</h1>
+    if (loading) {
 
-{
+        return <LoadingSpinner />;
 
-claims.map(claim=>(
+    }
 
-<div
-key={claim.id}
-style={{
-background:"white",
-padding:"25px",
-borderRadius:"15px",
-marginBottom:"20px",
-boxShadow:"0 3px 12px rgba(0,0,0,.08)"
-}}
->
+    return (
 
-<h2>{claim.lostItem.title}</h2>
+        <div className="page-container">
 
-<p>
+            <h1 className="page-title">
 
-Status :
+                My Ownership Claims
 
-<b>
+            </h1>
 
-{claim.status}
+            {
 
-</b>
+                claims.length === 0 ? (
 
-</p>
+                    <div className="empty-state">
 
-<p>
+                        <h2>📋</h2>
 
-Owner :
+                        <h3>No Claims Yet</h3>
 
-{claim.lostItem.user.name}
+                        <p>
 
-</p>
+                            You haven't submitted any ownership claims yet.
 
-</div>
+                        </p>
 
-))
+                    </div>
 
-}
+                ) : (
 
-</div>
+                    claims.map((claim) => (
 
-);
+                        <div
+                            key={claim.id}
+                            className="claim-card"
+                        >
+
+                            <h2>
+
+                                {claim.foundItem?.title || "Unknown Found Item"}
+
+                            </h2>
+
+                            <p>
+
+                                <strong>Found By :</strong>{" "}
+
+                                {claim.foundItem?.user?.name || "Unknown"}
+
+                            </p>
+
+                            <p>
+
+                                <strong>Location :</strong>{" "}
+
+                                {claim.foundItem?.location || "-"}
+
+                            </p>
+
+                            <p>
+
+                                <strong>Your Proof :</strong>
+
+                            </p>
+
+                            <p>
+
+                                {claim.message}
+
+                            </p>
+
+                            <p>
+
+                                <strong>Status :</strong>{" "}
+
+                                <span
+                                    className={`claim-status ${claim.status.toLowerCase()}`}
+                                >
+
+                                    {claim.status}
+
+                                </span>
+
+                            </p>
+
+                            {
+
+                                claim.foundItem && (
+
+                                    <button
+                                        style={{
+                                            marginTop: "15px",
+                                            background: "#2563EB",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "10px 18px",
+                                            borderRadius: "8px",
+                                            cursor: "pointer"
+                                        }}
+                                        onClick={() =>
+                                            navigate(`/found-items/${claim.foundItem.id}`)
+                                        }
+                                    >
+
+                                        View Found Item
+
+                                    </button>
+
+                                )
+
+                            }
+
+                        </div>
+
+                    ))
+
+                )
+
+            }
+
+        </div>
+
+    );
 
 }
 
