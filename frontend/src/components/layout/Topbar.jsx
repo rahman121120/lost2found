@@ -1,43 +1,41 @@
 import "./Topbar.css";
-import { FaBell, FaSearch } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
+import GlobalSearch from "../search/GlobalSearch";
 
-function Topbar(){
+function Topbar() {
 
-return(
+    return (
 
-<div className="topbar">
+        <div className="topbar">
 
-<div>
+            <div className="topbar-title">
 
-<h2>
+                <h2>
 
-Lost2Found
+                    Lost2Found
 
-</h2>
+                </h2>
 
-</div>
+            </div>
 
-<div className="top-actions">
+            <div className="top-actions">
 
-<div className="search">
+                <GlobalSearch />
 
-<FaSearch/>
+                <button
+                    className="notification-btn"
+                    title="Notifications"
+                >
 
-<input
+                    <FaBell />
 
-placeholder="Search..."
+                </button>
 
-/>
+            </div>
 
-</div>
+        </div>
 
-<FaBell/>
-
-</div>
-
-</div>
-
-);
+    );
 
 }
 

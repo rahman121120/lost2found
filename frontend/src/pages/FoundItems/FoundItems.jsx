@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import ItemCard from "../../components/cards/ItemCard";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import EmptyState from "../../components/common/EmptyState";
 import toast from "react-hot-toast";
 import "./FoundItems.css";
-import "../../styles/EmptyState.css";
 
 function FoundItems() {
 
@@ -35,7 +35,6 @@ function FoundItems() {
 
             });
 
-            // Newest first
             const sortedItems = [...response.data].sort(
                 (a, b) => b.id - a.id
             );
@@ -61,9 +60,13 @@ function FoundItems() {
         const keyword = search.toLowerCase();
 
         return (
+
             item.title?.toLowerCase().includes(keyword) ||
+
             item.category?.toLowerCase().includes(keyword) ||
+
             item.location?.toLowerCase().includes(keyword)
+
         );
 
     });
@@ -124,20 +127,11 @@ function FoundItems() {
 
                 filteredItems.length === 0 ? (
 
-                    <div className="empty-state">
-
-                        <h2>🎒</h2>
-
-                        <h3>No Found Items</h3>
-
-                        <p>
-
-                            No matching found items were found.
-                            Try another search or report a found item.
-
-                        </p>
-
-                    </div>
+                    <EmptyState
+                        icon="🎒"
+                        title="No Found Items"
+                        message="No matching found items were found. Try another search or report a found item."
+                    />
 
                 ) : (
 

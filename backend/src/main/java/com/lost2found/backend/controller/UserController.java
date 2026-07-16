@@ -13,30 +13,37 @@ import java.util.List;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
-      @Autowired
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private JwtService jwtService;
 
-
-    
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    // ==========================================
+    // Get All Users
+    // ==========================================
     @GetMapping
     public List<User> getUsers() {
+
         return userService.getAllUsers();
+
     }
 
+    // ==========================================
+    // Create User
+    // ==========================================
     @PostMapping
     public User createUser(@RequestBody User user) {
+
         return userService.saveUser(user);
+
     }
-    
-     @GetMapping("/profile")
+
+    // ==========================================
+    // Logged-in User Profile
+    // ==========================================
+    @GetMapping("/profile")
     public User getProfile(
             @RequestHeader("Authorization") String authHeader) {
 
@@ -44,10 +51,14 @@ public class UserController {
         String email = jwtService.extractEmail(token);
 
         return userService.getProfile(email);
+
     }
 
+    // ==========================================
+    // Update Profile
+    // ==========================================
     @PutMapping("/profile")
-    public String updateProfile(
+    public User updateProfile(
             @RequestBody UpdateProfileRequest request,
             @RequestHeader("Authorization") String authHeader) {
 
@@ -55,5 +66,7 @@ public class UserController {
         String email = jwtService.extractEmail(token);
 
         return userService.updateProfile(request, email);
+
     }
+
 }

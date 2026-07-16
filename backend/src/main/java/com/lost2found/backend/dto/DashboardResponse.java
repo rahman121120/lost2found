@@ -7,14 +7,29 @@ public class DashboardResponse {
     private int approvedClaims;
     private int pendingClaims;
 
+    private long returnedItems;
+    private long activeFoundItems;
+    private long recoveryRate;
+
     public DashboardResponse() {
     }
 
-    public DashboardResponse(int myItems, int myClaims, int approvedClaims, int pendingClaims) {
+    public DashboardResponse(
+            int myItems,
+            int myClaims,
+            int approvedClaims,
+            int pendingClaims,
+            long returnedItems,
+            long activeFoundItems,
+            long recoveryRate) {
+
         this.myItems = myItems;
         this.myClaims = myClaims;
         this.approvedClaims = approvedClaims;
         this.pendingClaims = pendingClaims;
+        this.returnedItems = returnedItems;
+        this.activeFoundItems = activeFoundItems;
+        this.recoveryRate = recoveryRate;
     }
 
     public int getMyItems() {
@@ -48,4 +63,29 @@ public class DashboardResponse {
     public void setPendingClaims(int pendingClaims) {
         this.pendingClaims = pendingClaims;
     }
+
+    public long getReturnedItems() {
+        return returnedItems;
+    }
+
+    public void setReturnedItems(long returnedItems) {
+        this.returnedItems = returnedItems;
+    }
+
+    public long getActiveFoundItems() {
+        return activeFoundItems;
+    }
+
+    public void setActiveFoundItems(long activeFoundItems) {
+        this.activeFoundItems = activeFoundItems;
+    }
+
+    public long getRecoveryRate() {
+        return recoveryRate;
+    }
+
+    public void setRecoveryRate(long recoveryRate) {
+        this.recoveryRate = recoveryRate;
+    }
+
 }

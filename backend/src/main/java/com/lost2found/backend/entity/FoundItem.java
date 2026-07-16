@@ -34,6 +34,12 @@ public class FoundItem {
 
     private String image;
 
+    /*
+     * AVAILABLE
+     * VERIFIED
+     * RETURNED
+     * ARCHIVED
+     */
     private String status;
 
     @ManyToOne
@@ -43,5 +49,10 @@ public class FoundItem {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    // Automatically set when the item should be archived
+    private LocalDateTime archiveAt;
+
+    // Whether the item is archived/expired
     private boolean expired = false;
+
 }

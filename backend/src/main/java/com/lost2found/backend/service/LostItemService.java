@@ -1,8 +1,8 @@
 package com.lost2found.backend.service;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
+
 import com.lost2found.backend.dto.LostItemRequest;
 import com.lost2found.backend.dto.UpdateLostItemRequest;
 import com.lost2found.backend.entity.LostItem;
@@ -21,6 +21,9 @@ public class LostItemService {
     @Autowired
     private UserRepository userRepository;
 
+    // =========================================================
+    // Create Lost Item
+    // =========================================================
     public String createLostItem(LostItemRequest request, String email) {
 
         User user = userRepository.findByEmail(email);
@@ -41,114 +44,172 @@ public class LostItemService {
         item.setReward(request.getReward());
 
         item.setStatus("LOST");
-
         item.setUser(user);
+
+        // Active for 10 days
+        item.setArchiveAt(LocalDateTime.now().plusDays(10));
+        item.setExpired(false);
 
         lostItemRepository.save(item);
 
         return "Lost Item Posted Successfully";
     }
+
+    // =========================================================
+    // Get All Active Lost Items
+    // =========================================================
     public List<LostItem> getAllLostItems() {
 
-    updateExpiredItems();
+        updateExpiredItems();
 
-    return lostItemRepository.findByExpiredFalseOrderByCreatedAtDesc();
-
+        return lostItemRepository.findByExpiredFalseOrderByCreatedAtDesc();
     }
 
+    // =========================================================
+    // Get Lost Item By ID
+    // =========================================================
     public LostItem getLostItemById(Integer id) {
 
-    return lostItemRepository
-            .findById(id)
-            .orElse(null);
+        updateExpiredItems();
 
-    }
-    public String updateLostItem(Integer id,
-                             UpdateLostItemRequest request,
-                             String email) {
-
-    LostItem item = lostItemRepository.findById(id).orElse(null);
-
-    if (item == null) {
-        return "Item Not Found";
+        return lostItemRepository.findById(id).orElse(null);
     }
 
-    // Only owner can update
-    if (!item.getUser().getEmail().equals(email)) {
-        return "You are not allowed to update this item";
+    // =========================================================
+    // Update Lost Item
+    // =========================================================
+    public String updateLostItem(
+            Integer id,
+            UpdateLostItemRequest request,
+            String email) {
+
+        updateExpiredItems();
+
+        LostItem item = lostItemRepository.findById(id).orElse(null);
+
+        if (item == null) {
+            return "Lost Item Not Found";
+        }
+
+        if (item.isExpired()) {
+            return "Archived items cannot be edited.";
+        }
+
+        if (!item.getUser().getEmail().equals(email)) {
+            return "You can update only your own post.";
+        }
+
+        item.setTitle(request.getTitle());
+        item.setDescription(request.getDescription());
+        item.setCategory(request.getCategory());
+        item.setLocation(request.getLocation());
+        item.setLatitude(request.getLatitude());
+        item.setLongitude(request.getLongitude());
+        item.setImage(request.getImage());
+        item.setReward(request.getReward());
+
+        lostItemRepository.save(item);
+
+        return "Lost Item Updated Successfully";
     }
 
-    item.setTitle(request.getTitle());
-    item.setDescription(request.getDescription());
-    item.setCategory(request.getCategory());
-    item.setLocation(request.getLocation());
-    item.setLatitude(request.getLatitude());
-    item.setLongitude(request.getLongitude());
-    item.setImage(request.getImage());
-    item.setReward(request.getReward());
-
-    lostItemRepository.save(item);
-
-    return "Lost Item Updated Successfully";
-    }
-
+    // =========================================================
+    // Delete Lost Item
+    // =========================================================
     public String deleteLostItem(Integer id, String email) {
 
-    LostItem item = lostItemRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Lost Item Not Found"));
+        updateExpiredItems();
 
-    if (!item.getUser().getEmail().equals(email)) {
-        throw new RuntimeException("You can delete only your own items");
+        LostItem item = lostItemRepository.findById(id).orElse(null);
+
+        if (item == null) {
+            return "Lost Item Not Found";
+        }
+
+        if (!item.getUser().getEmail().equals(email)) {
+            return "You can delete only your own post.";
+        }
+
+        lostItemRepository.delete(item);
+
+        return "Lost Item Deleted Successfully";
     }
 
-    lostItemRepository.delete(item);
-
-    return "Lost Item Deleted Successfully";
-    }
-    
-    // Search by Title
+    // =========================================================
+    // Search By Title
+    // =========================================================
     public List<LostItem> searchByTitle(String title) {
 
-    return lostItemRepository.findByTitleContainingIgnoreCase(title);
+        updateExpiredItems();
 
+        return lostItemRepository
+                .findByTitleContainingIgnoreCaseAndExpiredFalse(title);
     }
 
-// Search by Category
+    // =========================================================
+    // Search By Category
+    // =========================================================
     public List<LostItem> searchByCategory(String category) {
 
-    return lostItemRepository.findByCategoryIgnoreCase(category);
+        updateExpiredItems();
 
+        return lostItemRepository
+                .findByCategoryIgnoreCaseAndExpiredFalse(category);
     }
 
-// Search by Status
+    // =========================================================
+    // Search By Status
+    // =========================================================
     public List<LostItem> searchByStatus(String status) {
 
-    return lostItemRepository.findByStatusIgnoreCase(status);
+        updateExpiredItems();
 
+        return lostItemRepository
+                .findByStatusIgnoreCaseAndExpiredFalse(status);
     }
 
-// Search by Location
+    // =========================================================
+    // Search By Location
+    // =========================================================
     public List<LostItem> searchByLocation(String location) {
 
-    return lostItemRepository.findByLocationContainingIgnoreCase(location);
+        updateExpiredItems();
 
+        return lostItemRepository
+                .findByLocationContainingIgnoreCaseAndExpiredFalse(location);
     }
+
+    // =========================================================
+    // My Active Lost Items
+    // =========================================================
+    public List<LostItem> getMyLostItems(Integer userId) {
+
+        updateExpiredItems();
+
+        return lostItemRepository
+                .findByUserIdAndExpiredFalse(userId);
+    }
+
+    // =========================================================
+    // Update Expired Items
+    // =========================================================
     public void updateExpiredItems() {
 
-    List<LostItem> items = lostItemRepository.findAll();
+        List<LostItem> items = lostItemRepository.findAll();
 
-    LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
-    for (LostItem item : items) {
+        for (LostItem item : items) {
 
-        if (!item.isExpired()
-                && item.getCreatedAt().plusDays(4).isBefore(now)) {
+            if (!item.isExpired()
+                    && item.getArchiveAt() != null
+                    && item.getArchiveAt().isBefore(now)) {
 
-            item.setExpired(true);
+                item.setExpired(true);
 
-            lostItemRepository.save(item);
+                lostItemRepository.save(item);
+            }
         }
     }
-    }
-    
+
 }

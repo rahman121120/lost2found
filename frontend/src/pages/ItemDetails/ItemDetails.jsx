@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import Button from "../../components/common/Button";
+import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 import "./ItemDetails.css";
 
 function ItemDetails() {
@@ -13,6 +15,7 @@ function ItemDetails() {
     const [item, setItem] = useState(null);
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
 
@@ -98,6 +101,39 @@ function ItemDetails() {
         }
 
     }
+async function deleteItem() {
+
+    setShowDeleteModal(true);
+
+}
+
+async function confirmDeleteItem() {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        await api.delete(`/items/${id}`, {
+
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+
+        });
+
+        toast.success("Lost Item Deleted Successfully");
+
+        navigate("/lost-items");
+
+    } catch (error) {
+
+        console.error(error);
+
+        toast.error("Unable to delete item");
+
+    }
+
+}
 
     if (loading) {
 
@@ -130,11 +166,59 @@ function ItemDetails() {
 
             <div className="details-content">
 
-                <h1>{item.title}</h1>
+                <div
+    style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+    }}
+>
 
-                <span className={`status-badge ${item.status.toLowerCase()}`}>
-                    {item.status}
-                </span>
+    <div>
+
+        <h1>{item.title}</h1>
+
+        <span className={`status-badge ${item.status.toLowerCase()}`}>
+            {item.status}
+        </span>
+
+    </div>
+
+    {
+
+        item.user?.email === localStorage.getItem("userEmail") && (
+
+            <div
+                style={{
+                    display: "flex",
+                    gap: "10px"
+                }}
+            >
+
+<Button
+text="Edit"
+icon="✏"
+type="primary"
+onClick={() =>
+navigate(`/edit-lost-item/${item.id}`)
+}
+/>
+
+<Button
+text="Delete"
+icon="🗑"
+type="danger"
+onClick={deleteItem}
+/>
+
+
+            </div>
+
+        )
+
+    }
+
+</div>
 
                 <hr />
 
@@ -349,7 +433,19 @@ function ItemDetails() {
                 }
 
             </div>
+<DeleteConfirmationModal
 
+open={showDeleteModal}
+
+title="Delete Lost Item"
+
+message="Are you sure you want to permanently delete this lost item?"
+
+onCancel={() => setShowDeleteModal(false)}
+
+onConfirm={confirmDeleteItem}
+
+/>
         </div>
 
     );

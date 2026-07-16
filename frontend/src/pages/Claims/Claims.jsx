@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import Button from "../../components/common/Button";
 import "./Claims.css";
 
 function Claims() {
@@ -143,24 +144,22 @@ function Claims() {
 
                                 claim.foundItem && (
 
-                                    <button
+                                    <div
                                         style={{
-                                            marginTop: "15px",
-                                            background: "#2563EB",
-                                            color: "white",
-                                            border: "none",
-                                            padding: "10px 18px",
-                                            borderRadius: "8px",
-                                            cursor: "pointer"
+                                            marginTop: "18px"
                                         }}
-                                        onClick={() =>
-                                            navigate(`/found-items/${claim.foundItem.id}`)
-                                        }
                                     >
 
-                                        View Found Item
+                                        <Button
+                                            text="View Found Item"
+                                            icon="👀"
+                                            type="primary"
+                                            onClick={() =>
+                                                navigate(`/found-items/${claim.foundItem.id}`)
+                                            }
+                                        />
 
-                                    </button>
+                                    </div>
 
                                 )
 

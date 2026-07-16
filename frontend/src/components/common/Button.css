@@ -1,0 +1,184 @@
+/* ===================================================
+   Base Button
+=================================================== */
+
+.btn{
+
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+
+padding:12px 22px;
+
+border:none;
+border-radius:12px;
+
+font-size:15px;
+font-weight:600;
+
+cursor:pointer;
+
+transition:all .25s ease;
+
+user-select:none;
+
+text-decoration:none;
+
+outline:none;
+
+}
+
+/* ===================================================
+   Icon
+=================================================== */
+
+.btn-icon{
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:16px;
+
+}
+
+/* ===================================================
+   Primary
+=================================================== */
+
+.btn-primary{
+
+background:#2563EB;
+color:white;
+
+}
+
+.btn-primary:hover:not(:disabled){
+
+background:#1D4ED8;
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(37,99,235,.25);
+
+}
+
+/* ===================================================
+   Secondary
+=================================================== */
+
+.btn-secondary{
+
+background:#F3F4F6;
+color:#374151;
+
+border:1px solid #D1D5DB;
+
+}
+
+.btn-secondary:hover:not(:disabled){
+
+background:#E5E7EB;
+
+transform:translateY(-2px);
+
+}
+
+/* ===================================================
+   Success
+=================================================== */
+
+.btn-success{
+
+background:#16A34A;
+color:white;
+
+}
+
+.btn-success:hover:not(:disabled){
+
+background:#15803D;
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(22,163,74,.25);
+
+}
+
+/* ===================================================
+   Danger
+=================================================== */
+
+.btn-danger{
+
+background:#DC2626;
+color:white;
+
+}
+
+.btn-danger:hover:not(:disabled){
+
+background:#B91C1C;
+
+transform:translateY(-2px);
+
+box-shadow:0 8px 18px rgba(220,38,38,.25);
+
+}
+
+/* ===================================================
+   Disabled
+=================================================== */
+
+.btn:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+transform:none;
+
+box-shadow:none;
+
+}
+
+/* ===================================================
+   Active Click
+=================================================== */
+
+.btn:active:not(:disabled){
+
+transform:scale(.97);
+
+}
+
+/* ===================================================
+   Focus
+=================================================== */
+
+.btn:focus-visible{
+
+outline:3px solid rgba(37,99,235,.25);
+
+outline-offset:3px;
+
+}
+
+/* ===================================================
+   Responsive
+=================================================== */
+
+@media(max-width:768px){
+
+.btn{
+
+width:100%;
+
+padding:14px;
+
+font-size:15px;
+
+}
+
+}

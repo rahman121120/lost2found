@@ -11,8 +11,13 @@ function Profile() {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
 
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState("");
+
     useEffect(() => {
+
         loadProfile();
+
     }, []);
 
     async function loadProfile() {
@@ -31,45 +36,14 @@ function Profile() {
 
             setUser(response.data);
 
-        } catch (error) {
+        } catch (err) {
 
-            console.error(error);
+            console.error(err);
             toast.error("Unable to load profile");
 
         } finally {
 
             setLoading(false);
-
-        }
-
-    }
-
-    async function saveProfile() {
-
-        try {
-
-            const token = localStorage.getItem("token");
-
-            await api.put(
-                "/users/profile",
-                user,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            toast.success("Profile Updated Successfully");
-
-            setEditing(false);
-
-            localStorage.setItem("userName", user.name);
-
-        } catch (error) {
-
-            console.error(error);
-            toast.error("Unable to update profile");
 
         }
 
@@ -87,6 +61,94 @@ function Profile() {
 
     }
 
+    async function saveProfile() {
+
+        try {
+
+            const token = localStorage.getItem("token");
+
+            let uploadedImage = user.profileImage;
+
+            // Upload profile image
+            if (selectedFile) {
+
+                const formData = new FormData();
+
+                formData.append("file", selectedFile);
+
+                const uploadResponse = await api.post(
+
+                    "/files/upload",
+
+                    formData,
+
+                    {
+
+                        headers: {
+
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "multipart/form-data"
+
+                        }
+
+                    }
+
+                );
+
+                uploadedImage = uploadResponse.data.fileName;
+
+            }
+
+            const payload = {
+
+                ...user,
+
+                profileImage: uploadedImage
+
+            };
+
+            const response = await api.put(
+
+                "/users/profile",
+
+                payload,
+
+                {
+
+                    headers: {
+
+                        Authorization: `Bearer ${token}`
+
+                    }
+
+                }
+
+            );
+
+            setUser(response.data);
+
+            localStorage.setItem("userName", response.data.name);
+
+            toast.success("Profile Updated Successfully");
+
+            setEditing(false);
+
+            setSelectedFile(null);
+
+            setPreview("");
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            toast.error("Unable to update profile");
+
+        }
+
+    }
+
     if (loading) {
 
         return <LoadingSpinner />;
@@ -100,35 +162,106 @@ function Profile() {
             <div className="profile-card">
 
                 <img
+
                     src={
-                        user.profileImage &&
-                        user.profileImage.trim() !== "" &&
-                        user.profileImage !== "profile.jpg"
-                            ? `http://localhost:8080/uploads/${user.profileImage}`
-                            : defaultProfile
+
+                        preview
+
+                            ?
+
+                            preview
+
+                            :
+
+                            user.profileImage
+
+                                ?
+
+                                `http://localhost:8080/uploads/${user.profileImage}`
+
+                                :
+
+                                defaultProfile
+
                     }
+
                     alt="Profile"
+
+                    className="profile-image"
+
                 />
 
                 {
-                    editing ? (
 
-                        <input
-                            name="name"
-                            value={user.name || ""}
-                            onChange={handleChange}
-                        />
+                    editing && (
 
-                    ) : (
+                        <>
 
-                        <h2>{user.name || "Student"}</h2>
+                            <input
+
+                                type="file"
+
+                                accept="image/*"
+
+                                onChange={(e) => {
+
+                                    const file = e.target.files[0];
+
+                                    if (!file) return;
+
+                                    setSelectedFile(file);
+
+                                    setPreview(
+
+                                        URL.createObjectURL(file)
+
+                                    );
+
+                                }}
+
+                            />
+
+                        </>
 
                     )
+
+                }
+
+                {
+
+                    editing ?
+
+                        (
+
+                            <input
+
+                                name="name"
+
+                                value={user.name || ""}
+
+                                onChange={handleChange}
+
+                            />
+
+                        )
+
+                        :
+
+                        (
+
+                            <h2>
+
+                                {user.name}
+
+                            </h2>
+
+                        )
+
                 }
 
                 <span className="profile-role">
 
-                    {user.role || "Student"}
+                    Student
 
                 </span>
 
@@ -136,31 +269,49 @@ function Profile() {
 
                     <div>
 
-                        <strong>📧 Email</strong>
+                        <strong>Email</strong>
 
-                        <p>{user.email || "-"}</p>
+                        <p>
+
+                            {user.email}
+
+                        </p>
 
                     </div>
 
                     <div>
 
-                        <strong>📱 Phone</strong>
+                        <strong>Phone</strong>
 
                         {
 
-                            editing
+                            editing ?
 
-                                ?
+                                (
 
-                                <input
-                                    name="phone"
-                                    value={user.phone || ""}
-                                    onChange={handleChange}
-                                />
+                                    <input
+
+                                        name="phone"
+
+                                        value={user.phone || ""}
+
+                                        onChange={handleChange}
+
+                                    />
+
+                                )
 
                                 :
 
-                                <p>{user.phone || "-"}</p>
+                                (
+
+                                    <p>
+
+                                        {user.phone || "-"}
+
+                                    </p>
+
+                                )
 
                         }
 
@@ -168,23 +319,37 @@ function Profile() {
 
                     <div>
 
-                        <strong>🏫 Department</strong>
+                        <strong>Department</strong>
 
                         {
 
-                            editing
+                            editing ?
 
-                                ?
+                                (
 
-                                <input
-                                    name="department"
-                                    value={user.department || ""}
-                                    onChange={handleChange}
-                                />
+                                    <input
+
+                                        name="department"
+
+                                        value={user.department || ""}
+
+                                        onChange={handleChange}
+
+                                    />
+
+                                )
 
                                 :
 
-                                <p>{user.department || "-"}</p>
+                                (
+
+                                    <p>
+
+                                        {user.department || "-"}
+
+                                    </p>
+
+                                )
 
                         }
 
@@ -192,23 +357,37 @@ function Profile() {
 
                     <div>
 
-                        <strong>🎓 Year</strong>
+                        <strong>Year</strong>
 
                         {
 
-                            editing
+                            editing ?
 
-                                ?
+                                (
 
-                                <input
-                                    name="year"
-                                    value={user.year || ""}
-                                    onChange={handleChange}
-                                />
+                                    <input
+
+                                        name="year"
+
+                                        value={user.year || ""}
+
+                                        onChange={handleChange}
+
+                                    />
+
+                                )
 
                                 :
 
-                                <p>{user.year || "-"}</p>
+                                (
+
+                                    <p>
+
+                                        {user.year || "-"}
+
+                                    </p>
+
+                                )
 
                         }
 
@@ -220,28 +399,34 @@ function Profile() {
 
                     {
 
-                        editing
-
-                            ?
+                        editing ?
 
                             <>
 
                                 <button
+
                                     onClick={saveProfile}
+
                                 >
 
-                                    Save
+                                    Save Changes
 
                                 </button>
 
                                 <button
+
                                     onClick={() => {
 
                                         setEditing(false);
 
+                                        setPreview("");
+
+                                        setSelectedFile(null);
+
                                         loadProfile();
 
                                     }}
+
                                 >
 
                                     Cancel
@@ -253,7 +438,9 @@ function Profile() {
                             :
 
                             <button
+
                                 onClick={() => setEditing(true)}
+
                             >
 
                                 Edit Profile

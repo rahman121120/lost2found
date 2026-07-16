@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import Button from "../../components/common/Button";
+import DeleteConfirmationModal from "../../components/common/DeleteConfirmationModal";
 import "./FoundItemDetails.css";
 
 function FoundItemDetails() {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [item, setItem] = useState(null);
     const [claims, setClaims] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const loggedUser = localStorage.getItem("userEmail");
 
     useEffect(() => {
-        loadItem();
-    }, [id]);
+
+    loadItem();
+
+}, [id, loggedUser]);
 
     async function loadItem() {
 
@@ -122,6 +128,7 @@ function FoundItemDetails() {
             toast.success(response.data);
 
             setMessage("");
+            loadItem();
 
         } catch (err) {
 
@@ -154,10 +161,10 @@ function FoundItemDetails() {
                 }
 
             );
+toast.success(response.data);
 
-            toast.success(response.data);
-
-            loadClaims();
+loadClaims();
+loadItem();
 
         } catch (err) {
 
@@ -191,10 +198,10 @@ function FoundItemDetails() {
 
             );
 
-            toast.success(response.data);
+           toast.success(response.data);
 
-            loadClaims();
-
+loadClaims();
+loadItem();
         } catch (err) {
 
             console.error(err);
@@ -242,6 +249,59 @@ function FoundItemDetails() {
 
     }
 
+async function deleteFoundItem() {
+
+    setShowDeleteModal(true);
+
+}
+async function confirmDeleteFoundItem() {
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await api.delete(
+
+            `/found-items/${item.id}`,
+
+            {
+
+                headers: {
+
+                    Authorization: `Bearer ${token}`
+
+                }
+
+            }
+
+        );
+
+        toast.success(response.data);
+
+        setShowDeleteModal(false);
+
+        navigate("/found-items", {
+
+            replace: true
+
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        toast.error("Unable to delete item.");
+
+    }
+
+}
+
+function editFoundItem() {
+
+    navigate(`/edit-found-item/${item.id}`);
+
+}
+
     if (loading) {
 
         return <LoadingSpinner />;
@@ -282,9 +342,53 @@ function FoundItemDetails() {
 
                 <p><b>Found By:</b> {item?.user?.name}</p>
 
+              {
+item?.user?.email === loggedUser && (
+
+<div
+style={{
+display:"flex",
+gap:"15px",
+margin:"20px 0"
+}}
+>
+
+<Button
+
+text="Edit Item"
+
+icon="✏"
+
+type="primary"
+
+onClick={editFoundItem}
+
+/>
+
+<Button
+
+text="Delete Item"
+
+icon="🗑"
+
+type="danger"
+
+onClick={deleteFoundItem}
+
+/>
+
+
+
+</div>
+
+)
+}
+
                 {
 
-                    item?.user?.email !== loggedUser && (
+                    item?.user?.email !== loggedUser &&
+item?.status !== "RETURNED" &&
+item?.status !== "ARCHIVED" && (
 
                         <>
 
@@ -306,17 +410,15 @@ function FoundItemDetails() {
 
                             />
 
-                            <button
+                           <Button
 
-                                style={{ marginTop: "15px" }}
+text="Submit Ownership Claim"
 
-                                onClick={submitClaim}
+type="primary"
 
-                            >
+onClick={submitClaim}
 
-                                Submit Ownership Claim
-
-                            </button>
+/>
 
                         </>
 
@@ -342,7 +444,19 @@ function FoundItemDetails() {
 
                                 claims.length === 0 ? (
 
-                                    <p>No ownership claims yet.</p>
+                                   <div className="empty-state">
+
+📭
+
+<h3>No Ownership Claims Yet</h3>
+
+<p>
+
+No one has claimed this item yet.
+
+</p>
+
+</div>
 
                                 ) : (
 
@@ -372,11 +486,11 @@ function FoundItemDetails() {
 
                                                 <b>Status:</b>{" "}
 
-                                                <span>
+                                                <span className={`claim-status ${claim.status.toLowerCase()}`}>
 
-                                                    {claim.status}
+{claim.status}
 
-                                                </span>
+</span>
 
                                             </p>
 
@@ -398,25 +512,25 @@ function FoundItemDetails() {
 
                                                     >
 
-                                                        <button
+<Button
 
-                                                            onClick={() => approveClaim(claim.id)}
+text="Approve"
 
-                                                        >
+type="success"
 
-                                                            Approve
+onClick={() => approveClaim(claim.id)}
 
-                                                        </button>
+/>
 
-                                                        <button
+<Button
 
-                                                            onClick={() => rejectClaim(claim.id)}
+text="Reject"
 
-                                                        >
+type="danger"
 
-                                                            Reject
+onClick={() => rejectClaim(claim.id)}
 
-                                                        </button>
+/>
 
                                                     </div>
 
@@ -428,17 +542,15 @@ function FoundItemDetails() {
 
                                                 claim.status === "VERIFIED" && (
 
-                                                    <button
+<Button
 
-                                                        style={{ marginTop: "15px" }}
+text="Mark Returned"
 
-                                                        onClick={() => confirmReturn(claim.id)}
+type="success"
 
-                                                    >
+onClick={() => confirmReturn(claim.id)}
 
-                                                        Mark Returned
-
-                                                    </button>
+/>
 
                                                 )
 
@@ -459,7 +571,19 @@ function FoundItemDetails() {
                 }
 
             </div>
+<DeleteConfirmationModal
 
+open={showDeleteModal}
+
+title="Delete Found Item"
+
+message="Are you sure you want to permanently delete this found item?"
+
+onCancel={() => setShowDeleteModal(false)}
+
+onConfirm={confirmDeleteFoundItem}
+
+/>
         </div>
 
     );

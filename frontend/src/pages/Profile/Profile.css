@@ -16,13 +16,13 @@ min-height:100vh;
 
 .profile-card{
 
-width:450px;
+width:480px;
 
 background:var(--card);
 
 padding:35px;
 
-border-radius:var(--radius);
+border-radius:20px;
 
 box-shadow:var(--shadow);
 
@@ -34,35 +34,61 @@ transition:.3s;
 
 .profile-card:hover{
 
-transform:translateY(-5px);
+transform:translateY(-4px);
 
-box-shadow:0 18px 40px rgba(0,0,0,.12);
+box-shadow:0 20px 40px rgba(0,0,0,.12);
 
 }
 
-.profile-card img{
+/* ===========================
+   Profile Image
+=========================== */
 
-width:140px;
+.profile-image{
 
-height:140px;
+width:150px;
+
+height:150px;
 
 border-radius:50%;
 
 object-fit:cover;
 
-margin-bottom:20px;
-
-border:4px solid var(--primary);
+border:5px solid var(--primary);
 
 background:#f5f5f5;
 
+margin-bottom:18px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.12);
+
 }
+
+.profile-card input[type="file"]{
+
+margin:15px auto 25px;
+
+display:block;
+
+padding:10px;
+
+border:none;
+
+background:transparent;
+
+cursor:pointer;
+
+}
+
+/* ===========================
+   Name
+=========================== */
 
 .profile-card h2{
 
-margin:0;
+margin:10px 0 5px;
 
-font-size:28px;
+font-size:30px;
 
 font-weight:700;
 
@@ -72,21 +98,27 @@ color:var(--text);
 
 .profile-role{
 
-display:block;
+display:inline-block;
 
-margin-top:8px;
+padding:6px 18px;
 
-margin-bottom:25px;
+background:#EEF5FF;
 
-color:#64748b;
+color:var(--primary);
 
-font-size:15px;
+border-radius:30px;
+
+font-size:14px;
+
+font-weight:600;
+
+margin-bottom:30px;
 
 }
 
-/* ---------------------- */
-/* Editable Inputs */
-/* ---------------------- */
+/* ===========================
+   Inputs
+=========================== */
 
 .profile-card input{
 
@@ -120,7 +152,9 @@ box-shadow:0 0 0 3px rgba(37,99,235,.15);
 
 }
 
-/* ---------------------- */
+/* ===========================
+   Information Grid
+=========================== */
 
 .info{
 
@@ -140,21 +174,21 @@ margin-top:20px;
 
 background:#f8fafc;
 
-padding:16px;
+padding:18px;
 
-border-radius:12px;
-
-transition:.25s;
+border-radius:14px;
 
 border:1px solid #edf2f7;
+
+transition:.25s;
 
 }
 
 .info div:hover{
 
-background:#eef5ff;
+background:#EEF5FF;
 
-border-color:#c7ddff;
+border-color:#bfdbfe;
 
 }
 
@@ -162,7 +196,7 @@ border-color:#c7ddff;
 
 display:block;
 
-margin-bottom:6px;
+margin-bottom:8px;
 
 font-size:13px;
 
@@ -172,7 +206,7 @@ color:var(--primary);
 
 text-transform:uppercase;
 
-letter-spacing:.4px;
+letter-spacing:.5px;
 
 }
 
@@ -188,9 +222,9 @@ word-break:break-word;
 
 }
 
-/* ---------------------- */
-/* Buttons */
-/* ---------------------- */
+/* ===========================
+   Buttons
+=========================== */
 
 .profile-actions{
 
@@ -206,7 +240,7 @@ margin-top:30px;
 
 flex:1;
 
-padding:12px;
+padding:13px;
 
 border:none;
 
@@ -232,13 +266,15 @@ color:white;
 
 .profile-actions button:first-child:hover{
 
-filter:brightness(.95);
+background:#1D4ED8;
+
+transform:translateY(-2px);
 
 }
 
 .profile-actions button:last-child{
 
-background:#e5e7eb;
+background:#E5E7EB;
 
 color:#111827;
 
@@ -246,11 +282,13 @@ color:#111827;
 
 .profile-actions button:last-child:hover{
 
-background:#d1d5db;
+background:#D1D5DB;
 
 }
 
-/* ---------------------- */
+/* ===========================
+   Responsive
+=========================== */
 
 @media(max-width:900px){
 
@@ -278,17 +316,17 @@ padding:25px;
 
 }
 
-.profile-card img{
+.profile-image{
 
-width:110px;
+width:120px;
 
-height:110px;
+height:120px;
 
 }
 
 .profile-card h2{
 
-font-size:24px;
+font-size:25px;
 
 }
 
@@ -296,13 +334,55 @@ font-size:24px;
 
 grid-template-columns:1fr;
 
-gap:15px;
-
 }
 
 .profile-actions{
 
 flex-direction:column;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.profile-card{
+
+padding:20px;
+
+}
+
+.profile-image{
+
+width:100px;
+
+height:100px;
+
+}
+
+.profile-card h2{
+
+font-size:22px;
+
+}
+
+.profile-role{
+
+font-size:13px;
+
+}
+
+.info{
+
+gap:12px;
+
+}
+
+.profile-actions button{
+
+padding:12px;
+
+font-size:14px;
 
 }
 

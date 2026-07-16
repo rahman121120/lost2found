@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../../services/api";
+
 import ItemCard from "../../components/cards/ItemCard";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import "../../styles/EmptyState.css";
+import EmptyState from "../../components/common/EmptyState";
+
 import "./LostItems.css";
 
 function LostItems() {
@@ -51,16 +53,12 @@ function LostItems() {
 
     }
 
-    const filteredItems = items.filter(item => {
+    const filteredItems = items.filter(item =>
 
-        return (
+        item.title &&
+        item.title.toLowerCase().includes(search.toLowerCase())
 
-            item.title &&
-            item.title.toLowerCase().includes(search.toLowerCase())
-
-        );
-
-    });
+    );
 
     if (loading) {
 
@@ -103,19 +101,11 @@ function LostItems() {
 
                 filteredItems.length === 0 ? (
 
-                    <div className="empty-state">
-
-                        <h2>📦</h2>
-
-                        <h3>No Lost Items Found</h3>
-
-                        <p>
-
-                            Try another search or report a lost item.
-
-                        </p>
-
-                    </div>
+                    <EmptyState
+                        icon="📦"
+                        title="No Lost Items Found"
+                        message="Try another search or report a lost item."
+                    />
 
                 ) : (
 

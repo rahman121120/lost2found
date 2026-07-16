@@ -1,17 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
+
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Analytics from "./pages/Analytics/Analytics";
+
 import LostItems from "./pages/LostItems/LostItems";
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import CreateLostItem from "./pages/CreateLostItem/CreateLostItem";
+import EditLostItem from "./pages/EditLostItem/EditLostItem";
 
 import FoundItems from "./pages/FoundItems/FoundItems";
 import FoundItemDetails from "./pages/FoundItems/FoundItemDetails";
 import CreateFoundItem from "./pages/CreateFoundItem/CreateFoundItem";
+import EditFoundItem from "./pages/EditFoundItem/EditFoundItem";
 
 import Claims from "./pages/Claims/Claims";
 import Profile from "./pages/Profile/Profile";
+import Notifications from "./pages/Notifications/Notifications";
 
 import MainLayout from "./components/layout/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -45,6 +51,19 @@ function App() {
                         <ProtectedRoute>
                             <MainLayout>
                                 <Dashboard />
+                            </MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* ================= Analytics ================= */}
+
+                <Route
+                    path="/analytics"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout>
+                                <Analytics />
                             </MainLayout>
                         </ProtectedRoute>
                     }
@@ -85,6 +104,17 @@ function App() {
                     }
                 />
 
+                <Route
+                    path="/edit-lost-item/:id"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout>
+                                <EditLostItem />
+                            </MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
                 {/* ================= Found Items ================= */}
 
                 <Route
@@ -120,6 +150,17 @@ function App() {
                     }
                 />
 
+                <Route
+                    path="/edit-found-item/:id"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout>
+                                <EditFoundItem />
+                            </MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
                 {/* ================= Claims ================= */}
 
                 <Route
@@ -146,13 +187,24 @@ function App() {
                     }
                 />
 
+                {/* ================= Notifications ================= */}
+
+                <Route
+                    path="/notifications"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout>
+                                <Notifications />
+                            </MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
                 {/* ================= 404 ================= */}
 
                 <Route
                     path="*"
-                    element={
-                        <Navigate to="/" replace />
-                    }
+                    element={<Navigate to="/" replace />}
                 />
 
             </Routes>

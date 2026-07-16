@@ -7,14 +7,13 @@ padding:10px;
 
 }
 
-/* ===========================
-   Welcome Card
-=========================== */
+/* ===================================
+   Welcome Banner
+=================================== */
 
 .welcome{
 
 background:linear-gradient(135deg,#2563EB,#3B82F6);
-color:white;
 padding:35px;
 border-radius:20px;
 box-shadow:0 15px 35px rgba(37,99,235,.25);
@@ -23,6 +22,7 @@ box-shadow:0 15px 35px rgba(37,99,235,.25);
 
 .welcome h1{
 
+color:#fff;
 font-size:34px;
 font-weight:700;
 margin-bottom:8px;
@@ -31,93 +31,236 @@ margin-bottom:8px;
 
 .welcome p{
 
+color:#E5E7EB;
 font-size:16px;
-opacity:.9;
 
 }
 
-/* ===========================
-   Dashboard Statistics
-=========================== */
+/* ===================================
+   Statistics
+=================================== */
 
 .dashboard-grid{
 
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:22px;
-margin-bottom:10px;
 
 }
 
 .dashboard-grid>div{
 
-cursor:pointer;
 transition:.25s;
 
 }
 
 .dashboard-grid>div:hover{
 
-transform:translateY(-4px);
+transform:translateY(-5px);
 
 }
 
-/* ===========================
-   Sections
-=========================== */
+/* ===================================
+   Common Cards
+=================================== */
 
+.quick-actions,
+.match-section,
 .recent-activity,
-.quick-actions{
+.recent-found,
+.recovery-summary,
+.ownership-section{
 
 background:#fff;
 padding:28px;
 border-radius:20px;
 box-shadow:0 8px 25px rgba(0,0,0,.08);
-transition:.3s;
 
 }
 
-.recent-activity:hover,
-.quick-actions:hover{
+/* ===================================
+   Section Titles
+=================================== */
 
-transform:translateY(-3px);
-
-}
-
-/* ===========================
-   Section Header
-=========================== */
-
+.quick-actions h2,
+.match-section h2,
 .recent-activity h2,
-.quick-actions h2{
+.recent-found h2,
+.recovery-summary h2,
+.ownership-section h2{
 
 font-size:24px;
 font-weight:700;
-margin-bottom:22px;
+margin-bottom:20px;
 color:#1F2937;
 
 }
 
-/* ===========================
-   Recent Activity
-=========================== */
+/* ===================================
+   Recovery Summary
+=================================== */
+
+.summary-grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+
+}
+
+.summary-card{
+
+background:#F8FAFC;
+padding:22px;
+border-radius:14px;
+text-align:center;
+
+}
+
+.summary-card h3{
+
+font-size:15px;
+color:#64748B;
+margin-bottom:10px;
+
+}
+
+.summary-card h1{
+
+font-size:32px;
+color:#2563EB;
+
+}
+
+/* ===================================
+   Match Notifications
+=================================== */
+
+.match-card{
+
+display:flex;
+align-items:center;
+gap:20px;
+padding:18px 0;
+border-bottom:1px solid #eee;
+
+}
+
+.match-card:last-child{
+
+border-bottom:none;
+
+}
+
+.match-card img{
+
+width:95px;
+height:95px;
+border-radius:14px;
+object-fit:cover;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+.match-card h3{
+
+font-size:20px;
+margin-bottom:8px;
+color:#111827;
+
+}
+
+.match-card p{
+
+margin:5px 0;
+color:#4B5563;
+
+}
+
+.match-card button{
+
+padding:12px 22px;
+border:none;
+border-radius:10px;
+background:#2563EB;
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
+
+}
+
+.match-card button:hover{
+
+background:#1D4ED8;
+transform:translateY(-2px);
+
+}
+
+/* ===================================
+   Ownership Requests
+=================================== */
+
+.request-card{
+
+padding:18px;
+border:1px solid #E5E7EB;
+border-radius:14px;
+margin-bottom:16px;
+transition:.25s;
+
+}
+
+.request-card:hover{
+
+box-shadow:0 6px 16px rgba(0,0,0,.08);
+
+}
+
+.request-card h3{
+
+margin-bottom:10px;
+color:#111827;
+
+}
+
+.request-card p{
+
+margin:6px 0;
+color:#4B5563;
+
+}
+
+.request-card button{
+
+margin-top:15px;
+padding:10px 18px;
+border:none;
+border-radius:8px;
+background:#2563EB;
+color:white;
+cursor:pointer;
+
+}
+
+/* ===================================
+   Recent Lists
+=================================== */
 
 .recent-item{
 
 display:flex;
 justify-content:space-between;
 align-items:center;
-
-padding:16px 0;
-
+padding:15px 0;
 border-bottom:1px solid #ECECEC;
-
-font-size:15px;
-color:#374151;
-
 transition:.25s;
 
-cursor:pointer;
+}
+
+.recent-item:last-child{
+
+border-bottom:none;
 
 }
 
@@ -128,27 +271,21 @@ color:#2563EB;
 
 }
 
-.recent-item:last-child{
-
-border-bottom:none;
-
-}
-
-/* ===========================
+/* ===================================
    Empty State
-=========================== */
+=================================== */
 
 .empty-state{
 
-padding:40px 20px;
 text-align:center;
+padding:45px 20px;
 color:#64748B;
 
 }
 
 .empty-state h2{
 
-font-size:54px;
+font-size:55px;
 margin-bottom:10px;
 
 }
@@ -164,70 +301,28 @@ color:#1E293B;
 .empty-state p{
 
 font-size:15px;
-line-height:1.6;
 
 }
 
-/* ===========================
-   Quick Action Buttons
-=========================== */
+.empty-text{
 
-.action-buttons{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-
-}
-
-.action-buttons button{
-
-display:flex;
-justify-content:center;
-align-items:center;
-gap:10px;
-
-padding:18px;
-
-border:none;
-border-radius:14px;
-
-background:linear-gradient(135deg,#2563EB,#3B82F6);
-
-color:white;
-
+color:#64748B;
 font-size:15px;
-font-weight:600;
-
-cursor:pointer;
-
-transition:.3s;
-
-box-shadow:0 8px 18px rgba(37,99,235,.25);
+margin-top:10px;
 
 }
 
-.action-buttons button:hover{
-
-transform:translateY(-4px);
-
-box-shadow:0 16px 30px rgba(37,99,235,.35);
-
-}
-
-/* ===========================
+/* ===================================
    View All Button
-=========================== */
+=================================== */
 
 .view-all{
 
-border:none;
 background:none;
+border:none;
 color:#2563EB;
 font-weight:600;
 cursor:pointer;
-font-size:15px;
-transition:.2s;
 
 }
 
@@ -237,81 +332,51 @@ text-decoration:underline;
 
 }
 
-/* ===========================
-   Status Badge
-=========================== */
+/* ===================================
+   Scroll
+=================================== */
 
-.activity-status{
-
-padding:5px 12px;
-border-radius:999px;
-font-size:12px;
-font-weight:600;
-text-transform:uppercase;
-
-}
-
-.activity-status.pending{
-
-background:#FEF3C7;
-color:#92400E;
-
-}
-
-.activity-status.verified{
-
-background:#DCFCE7;
-color:#166534;
-
-}
-
-.activity-status.returned{
-
-background:#DBEAFE;
-color:#1D4ED8;
-
-}
-
-.activity-status.rejected{
-
-background:#FEE2E2;
-color:#991B1B;
-
-}
-
-/* ===========================
-   Scrollbar
-=========================== */
-
-.recent-activity{
+.recent-activity,
+.recent-found,
+.ownership-section{
 
 max-height:420px;
 overflow-y:auto;
 
 }
 
-.recent-activity::-webkit-scrollbar{
+.recent-activity::-webkit-scrollbar,
+.recent-found::-webkit-scrollbar,
+.ownership-section::-webkit-scrollbar{
 
 width:6px;
 
 }
 
-.recent-activity::-webkit-scrollbar-thumb{
+.recent-activity::-webkit-scrollbar-thumb,
+.recent-found::-webkit-scrollbar-thumb,
+.ownership-section::-webkit-scrollbar-thumb{
 
 background:#CBD5E1;
 border-radius:20px;
 
 }
 
-/* ===========================
+/* ===================================
    Responsive
-=========================== */
+=================================== */
 
 @media(max-width:1200px){
 
 .dashboard-grid{
 
 grid-template-columns:repeat(2,1fr);
+
+}
+
+.summary-grid{
+
+grid-template-columns:1fr;
 
 }
 
@@ -331,15 +396,23 @@ grid-template-columns:1fr;
 
 }
 
-.action-buttons{
+.match-card{
 
-grid-template-columns:1fr;
+flex-direction:column;
+align-items:flex-start;
 
 }
 
-.welcome{
+.match-card img{
 
-padding:28px;
+width:100%;
+height:220px;
+
+}
+
+.match-card button{
+
+width:100%;
 
 }
 
@@ -349,22 +422,15 @@ font-size:28px;
 
 }
 
-.welcome p{
-
-font-size:15px;
-
-}
-
-.recent-activity,
-.quick-actions{
-
-padding:22px;
-
-}
-
 }
 
 @media(max-width:480px){
+
+.welcome{
+
+padding:25px;
+
+}
 
 .welcome h1{
 
@@ -372,17 +438,14 @@ font-size:24px;
 
 }
 
-.recent-activity h2,
-.quick-actions h2{
+.quick-actions,
+.match-section,
+.recent-activity,
+.recent-found,
+.recovery-summary,
+.ownership-section{
 
-font-size:20px;
-
-}
-
-.action-buttons button{
-
-padding:15px;
-font-size:14px;
+padding:20px;
 
 }
 

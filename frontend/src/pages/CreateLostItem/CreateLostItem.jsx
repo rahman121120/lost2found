@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import "./CreateLostItem.css";
 import toast from "react-hot-toast";
+import Button from "../../components/common/Button";
 
 function CreateLostItem() {
 
@@ -16,10 +17,13 @@ function CreateLostItem() {
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState("");
+    const [loading, setLoading] = useState(false);
 
     async function submitItem() {
 
         try {
+
+            setLoading(true);
 
             const token = localStorage.getItem("token");
 
@@ -29,25 +33,33 @@ function CreateLostItem() {
             if (selectedFile) {
 
                 const formData = new FormData();
+
                 formData.append("file", selectedFile);
 
                 const uploadResponse = await api.post(
+
                     "/files/upload",
+
                     formData,
+
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "multipart/form-data"
                         }
                     }
+
                 );
 
                 uploadedImage = uploadResponse.data.fileName;
+
             }
 
             // Create Lost Item
             await api.post(
+
                 "/items",
+
                 {
                     title,
                     description,
@@ -56,11 +68,13 @@ function CreateLostItem() {
                     reward,
                     image: uploadedImage
                 },
+
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 }
+
             );
 
             toast.success("Lost Item Posted Successfully");
@@ -73,6 +87,10 @@ function CreateLostItem() {
 
             toast.error("Unable to post lost item");
 
+        } finally {
+
+            setLoading(false);
+
         }
 
     }
@@ -82,7 +100,9 @@ function CreateLostItem() {
         <div className="create-item">
 
             <h1 className="page-title">
+
                 Report Lost Item
+
             </h1>
 
             <input
@@ -120,7 +140,9 @@ function CreateLostItem() {
             />
 
             <h3 style={{ marginTop: "20px" }}>
+
                 Upload Image
+
             </h3>
 
             <input
@@ -139,26 +161,35 @@ function CreateLostItem() {
                 }}
             />
 
-            {preview && (
+            {
 
-                <img
-                    src={preview}
-                    alt="Preview"
-                    style={{
-                        width: "250px",
-                        marginTop: "20px",
-                        borderRadius: "12px"
-                    }}
+                preview && (
+
+                    <img
+                        src={preview}
+                        alt="Preview"
+                        style={{
+                            width: "250px",
+                            marginTop: "20px",
+                            borderRadius: "12px"
+                        }}
+                    />
+
+                )
+
+            }
+
+            <div style={{ marginTop: "30px" }}>
+
+                <Button
+                    text={loading ? "Posting..." : "Submit Lost Item"}
+                    icon="📦"
+                    type="primary"
+                    onClick={submitItem}
+                    disabled={loading}
                 />
 
-            )}
-
-            <button
-                style={{ marginTop: "25px" }}
-                onClick={submitItem}
-            >
-                Submit
-            </button>
+            </div>
 
         </div>
 

@@ -10,6 +10,7 @@ import com.lost2found.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -135,16 +136,22 @@ public class ClaimService {
             return "Claim has not been verified.";
         }
 
-        // Mark selected claim as returned
+        // Mark claim as returned
         claim.setStatus("RETURNED");
 
-        // Update found item status
+        // Update found item
         FoundItem foundItem = claim.getFoundItem();
+
         foundItem.setStatus("RETURNED");
+
+        // Archive after 1 day
+        foundItem.setArchiveAt(
+                LocalDateTime.now().plusDays(1)
+        );
 
         foundItemRepository.save(foundItem);
 
-        // Reject all remaining pending claims
+        // Reject remaining pending claims
         List<Claim> pendingClaims =
                 claimRepository.findByFoundItemAndStatus(
                         foundItem,
@@ -154,7 +161,9 @@ public class ClaimService {
         for (Claim otherClaim : pendingClaims) {
 
             if (!otherClaim.getId().equals(claim.getId())) {
+
                 otherClaim.setStatus("REJECTED");
+
             }
 
         }

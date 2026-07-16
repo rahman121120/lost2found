@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import "./CreateFoundItem.css";
 import toast from "react-hot-toast";
+import Button from "../../components/common/Button";
+import "./CreateFoundItem.css";
 
 function CreateFoundItem() {
 
@@ -17,9 +18,21 @@ function CreateFoundItem() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
     async function submitItem() {
 
+        if (!title || !description || !category || !location) {
+
+            toast.error("Please fill all required fields.");
+
+            return;
+
+        }
+
         try {
+
+            setLoading(true);
 
             const token = localStorage.getItem("token");
 
@@ -33,47 +46,74 @@ function CreateFoundItem() {
                 formData.append("file", selectedFile);
 
                 const uploadResponse = await api.post(
+
                     "/files/upload",
+
                     formData,
+
                     {
+
                         headers: {
+
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "multipart/form-data"
+
                         }
+
                     }
+
                 );
 
                 uploadedImage = uploadResponse.data.fileName;
+
             }
 
             // Create Found Item
             await api.post(
+
                 "/found-items",
+
                 {
+
                     title,
                     description,
                     category,
                     location,
-                    reward,
+                    reward: reward || 0,
                     image: uploadedImage,
-                    status: "FOUND"     
+                    status: "FOUND"
+
                 },
+
                 {
+
                     headers: {
+
                         Authorization: `Bearer ${token}`
+
                     }
+
                 }
+
             );
 
             toast.success("Found Item Posted Successfully");
 
             navigate("/found-items");
 
-        } catch (err) {
+        }
+
+        catch (err) {
 
             console.error(err);
 
-            toast.error("Unable to post found item");
+            toast.error("Unable to post found item.");
+
+        }
+
+        finally {
+
+            setLoading(false);
 
         }
 
@@ -84,41 +124,49 @@ function CreateFoundItem() {
         <div className="create-item">
 
             <h1 className="page-title">
+
                 Report Found Item
+
             </h1>
 
             <input
-                placeholder="Title"
+                type="text"
+                placeholder="Item Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
             />
 
             <textarea
-                placeholder="Description"
+                placeholder="Describe the item..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
             />
 
             <input
+                type="text"
                 placeholder="Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
             />
 
             <input
-                placeholder="Location"
+                type="text"
+                placeholder="Location Found"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
             />
 
             <input
-                placeholder="Reward"
+                type="number"
+                placeholder="Reward (Optional)"
                 value={reward}
                 onChange={(e) => setReward(e.target.value)}
             />
 
             <h3 style={{ marginTop: "20px" }}>
+
                 Upload Image
+
             </h3>
 
             <input
@@ -137,26 +185,46 @@ function CreateFoundItem() {
                 }}
             />
 
-            {preview && (
+            {
 
-                <img
-                    src={preview}
-                    alt="Preview"
-                    style={{
-                        width: "250px",
-                        marginTop: "20px",
-                        borderRadius: "12px"
-                    }}
+                preview && (
+
+                    <img
+
+                        src={preview}
+
+                        alt="Preview"
+
+                        style={{
+
+                            width: "250px",
+                            height: "250px",
+                            objectFit: "contain",
+                            background: "#f8fafc",
+                            border: "1px solid #ddd",
+                            borderRadius: "12px",
+                            marginTop: "20px",
+                            padding: "10px"
+
+                        }}
+
+                    />
+
+                )
+
+            }
+
+            <div style={{ marginTop: "30px" }}>
+
+                <Button
+                    text={loading ? "Posting..." : "Submit Found Item"}
+                    icon="📤"
+                    type="primary"
+                    onClick={submitItem}
+                    disabled={loading}
                 />
 
-            )}
-
-            <button
-                style={{ marginTop: "25px" }}
-                onClick={submitItem}
-            >
-                Submit
-            </button>
+            </div>
 
         </div>
 

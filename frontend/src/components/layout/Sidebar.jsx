@@ -6,6 +6,7 @@ import {
     FaBoxOpen,
     FaClipboardCheck,
     FaUser,
+    FaChartBar,
     FaSignOutAlt
 } from "react-icons/fa";
 
@@ -15,12 +16,10 @@ function Sidebar() {
 
     function logout() {
 
-        // Clear login information
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
         localStorage.removeItem("userEmail");
 
-        // Redirect to login
         navigate("/", { replace: true });
 
     }
@@ -45,6 +44,16 @@ function Sidebar() {
                 >
                     <FaHome />
                     <span>Dashboard</span>
+                </NavLink>
+
+                <NavLink
+                    to="/analytics"
+                    className={({ isActive }) =>
+                        isActive ? "active-link" : ""
+                    }
+                >
+                    <FaChartBar />
+                    <span>Analytics</span>
                 </NavLink>
 
                 <NavLink
@@ -97,7 +106,9 @@ function Sidebar() {
                 <FaSignOutAlt />
 
                 <span style={{ marginLeft: "8px" }}>
+
                     Logout
+
                 </span>
 
             </button>

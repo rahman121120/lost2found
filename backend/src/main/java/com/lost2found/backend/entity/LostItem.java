@@ -1,4 +1,4 @@
- package com.lost2found.backend.entity;
+package com.lost2found.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,8 +36,14 @@ public class LostItem {
 
     private String reward;
 
+    /*
+     * LOST
+     * RECOVERED
+     * ARCHIVED
+     */
     private String status;
 
+    // Used by scheduler to hide archived posts
     private boolean expired = false;
 
     @ManyToOne
@@ -47,12 +53,7 @@ public class LostItem {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public boolean isExpired() {
-    return expired;
-    }
-
-    public void setExpired(boolean expired) {
-    this.expired = expired;
-    }
+    // Automatically determines when this post should disappear
+    private LocalDateTime archiveAt;
 
 }

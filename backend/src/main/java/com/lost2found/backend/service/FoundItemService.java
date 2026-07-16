@@ -11,6 +11,7 @@ import com.lost2found.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +48,17 @@ public class FoundItemService {
         item.setLongitude(request.getLongitude());
         item.setImage(request.getImage());
 
-        // Default status if frontend doesn't send one
         if (request.getStatus() == null || request.getStatus().isBlank()) {
             item.setStatus("AVAILABLE");
         } else {
             item.setStatus(request.getStatus());
         }
+
+        item.setExpired(false);
+
+        item.setArchiveAt(
+                LocalDateTime.now().plusDays(10)
+        );
 
         item.setUser(user);
 
@@ -62,11 +68,12 @@ public class FoundItemService {
     }
 
     // =====================================================
-    // Get All Found Items
+    // Get All Active Found Items
     // =====================================================
     public List<FoundItem> getAllFoundItems() {
 
-        return foundItemRepository.findAllByOrderByCreatedAtDesc();
+        return foundItemRepository
+                .findByExpiredFalseOrderByCreatedAtDesc();
 
     }
 
@@ -87,7 +94,9 @@ public class FoundItemService {
             UpdateFoundItemRequest request,
             String email) {
 
-        FoundItem item = foundItemRepository.findById(id).orElse(null);
+        FoundItem item = foundItemRepository
+                .findById(id)
+                .orElse(null);
 
         if (item == null) {
             return "Found Item Not Found";
@@ -116,7 +125,9 @@ public class FoundItemService {
     // =====================================================
     public String deleteFoundItem(Integer id, String email) {
 
-        FoundItem item = foundItemRepository.findById(id).orElse(null);
+        FoundItem item = foundItemRepository
+                .findById(id)
+                .orElse(null);
 
         if (item == null) {
             return "Found Item Not Found";
@@ -136,25 +147,29 @@ public class FoundItemService {
     // =====================================================
     public List<FoundItem> searchByTitle(String title) {
 
-        return foundItemRepository.findByTitleContainingIgnoreCase(title);
+        return foundItemRepository
+                .findByTitleContainingIgnoreCaseAndExpiredFalse(title);
 
     }
 
     public List<FoundItem> searchByCategory(String category) {
 
-        return foundItemRepository.findByCategoryIgnoreCase(category);
+        return foundItemRepository
+                .findByCategoryIgnoreCaseAndExpiredFalse(category);
 
     }
 
     public List<FoundItem> searchByStatus(String status) {
 
-        return foundItemRepository.findByStatusIgnoreCase(status);
+        return foundItemRepository
+                .findByStatusIgnoreCaseAndExpiredFalse(status);
 
     }
 
     public List<FoundItem> searchByLocation(String location) {
 
-        return foundItemRepository.findByLocationContainingIgnoreCase(location);
+        return foundItemRepository
+                .findByLocationContainingIgnoreCaseAndExpiredFalse(location);
 
     }
 
@@ -167,27 +182,24 @@ public class FoundItemService {
                 .findById(lostItemId)
                 .orElse(null);
 
-        if (lostItem == null) {
+        if (lostItem == null || lostItem.isExpired()) {
             return new ArrayList<>();
         }
 
         List<FoundItem> candidates =
-                foundItemRepository.findByCategoryIgnoreCaseAndExpiredFalse(
-                        lostItem.getCategory());
+                foundItemRepository
+                        .findByCategoryIgnoreCaseAndExpiredFalse(
+                                lostItem.getCategory());
 
         List<FoundItem> matches = new ArrayList<>();
 
         for (FoundItem item : candidates) {
 
-            // Ignore already returned items
             if ("RETURNED".equalsIgnoreCase(item.getStatus())) {
                 continue;
             }
 
-            int score = 0;
-
-            // Category match
-            score += 30;
+            int score = 30;
 
             // Title similarity
             if (item.getTitle() != null && lostItem.getTitle() != null) {
@@ -199,6 +211,7 @@ public class FoundItemService {
                         || lostTitle.contains(foundTitle)) {
 
                     score += 40;
+
                 }
 
             }
@@ -213,23 +226,28 @@ public class FoundItemService {
                         || lostLocation.contains(foundLocation)) {
 
                     score += 20;
+
                 }
 
             }
 
-            // Image exists
+            // Image bonus
             if (item.getImage() != null && !item.getImage().isBlank()) {
+
                 score += 10;
+
             }
 
-            // Minimum confidence
             if (score >= 60) {
+
                 matches.add(item);
+
             }
 
         }
 
         return matches;
+
     }
 
 }
